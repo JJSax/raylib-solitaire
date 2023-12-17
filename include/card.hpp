@@ -14,7 +14,7 @@ namespace solitaire {
         SPADES
     };
 
-    std::ostream& operator<<(std::ostream& os, const Suit& suit);
+    std::ostream& operator<<(std::ostream& os, const Suit& suit) noexcept;
 
     // in order for foundation
     enum Face {
@@ -33,7 +33,7 @@ namespace solitaire {
         KING
     };
 
-    std::ostream& operator<<(std::ostream& os, const Face& face);
+    std::ostream& operator<<(std::ostream& os, const Face& face) noexcept;
 
     class Card {
     private:
@@ -43,47 +43,49 @@ namespace solitaire {
         const Face face;
         const Suit suit;
 
-        Card(Face f, Suit s): Card(f, s, false) {}
-        Card(Face f, Suit s, bool faceUp): face(f), suit(s), faceUp(faceUp) {}
+        Card(Face f, Suit s) noexcept: Card(f, s, false) {}
+        Card(Face f, Suit s, bool faceUp) noexcept: face(f), suit(s), faceUp(faceUp) {}
 
-        void setFaceUp(bool faceUp);
-        bool isFaceUp();
+        void setFaceUp(bool faceUp) noexcept;
+        bool isFaceUp() const noexcept;
 
-        friend std::ostream& operator<<(std::ostream& os, const Card& card);
+        friend std::ostream& operator<<(std::ostream& os, const Card& card) noexcept;
     };
 
     class CardPile {
         std::deque<std::shared_ptr<Card>> cards;
     public:
-        virtual ~CardPile() {
+        virtual ~CardPile() noexcept {
             // NOP, shared pointers self destruct when out of scope
         }
 
-        void add(const Card& c);
+        void add(const Card& c) noexcept;
+        void add(std::shared_ptr<Card> c) noexcept;
 
         template<typename Iterator>
-        void addRange(Iterator start, Iterator end) {
+        void addRange(Iterator start, Iterator end) noexcept {
             this->cards.push_back(start, end);
         }
 
-        bool empty();
-        std::size_t size();
+        bool empty() const noexcept;
+        std::size_t size() const noexcept;
 
-        auto begin() {
+        auto begin() noexcept {
             return this->cards.begin();
         }
 
-        auto end() {
+        auto end() noexcept {
             return this->cards.end();
         }
 
-        [[nodiscard]] std::optional<const std::weak_ptr<Card>> peek(std::size_t index=0) const;
+        [[nodiscard]] std::optional<const std::weak_ptr<Card>> peek(std::size_t index=0) const noexcept;
 
         // splits the deck, with the range [0, amount) being returned in a
         // new CardPile, and the remaining cards staying put as this deck's cards.
+        // throws if amount > this->size()
         [[nodiscard]] CardPile *split(std::size_t amount);
 
-        // returns nullptr if there is no top
+        // throws if pile is empty
         [[nodiscard]] std::shared_ptr<Card> takeTop();
     };
 }
