@@ -17,9 +17,11 @@ int main() {
     auto rng = std::default_random_engine();
     rng.seed(123UL);
 
-    Game game(rng);
+    Game game;
+    game.shuffleStock<>(rng);
+    game.dealGame();
     game.turnStock();
-    cout << *game.peekWaste() << endl;
+    cout << (*game.peekWaste()).suit << endl;
 
     return 0;
 }

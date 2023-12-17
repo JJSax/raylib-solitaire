@@ -8,8 +8,8 @@
 namespace solitaire {
     // weakest to strongest in poker order
     enum Suit {
-        SUITS_FIRST,
         CLUBS,
+        SUITS_FIRST = CLUBS,
         DIAMONDS,
         HEARTS,
         SPADES,

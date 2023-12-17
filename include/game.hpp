@@ -19,21 +19,15 @@ namespace solitaire {
     public:
         static const int NUM_TABLEAUS = 7;
 
+        Game();
+        virtual ~Game();
+
         template<typename URNG>
-        Game(URNG& rand) {
-            this->initFullDeckInOrder();
+        void shuffleStock(URNG& rand) {
             std::shuffle(this->stock.begin(), this->stock.end(), rand);
-            this->initFoundations();
-            this->dealClosedTableau();
-            this->dealOpenTableau();
         }
 
-        virtual ~Game() {
-            for (Card *c: this->allCards) {
-                delete c;
-            }
-            this->allCards.clear();
-        }
+        void dealGame();
 
         bool hasStock() const noexcept;
         void turnStock();
@@ -44,7 +38,7 @@ namespace solitaire {
 
         // these transfer cards out of card pile
         bool stackTableau(std::size_t index, CardPile& cards);
-        bool stackFoundation(Suit suit, Card card);
+        bool stackFoundation(Suit suit, CardPile& cards);
 
     private:
         std::array<CardPile, NUM_TABLEAUS> openTableau;

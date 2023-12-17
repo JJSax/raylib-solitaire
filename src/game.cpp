@@ -32,6 +32,23 @@ namespace solitaire {
         return oldTop->face == newCard.face - 1;
     }
 
+    Game::Game() {
+        this->initFullDeckInOrder();
+    }
+
+    Game::~Game() {
+        for (Card *c : this->allCards) {
+            delete c;
+        }
+        this->allCards.clear();
+    }
+
+    void Game::dealGame() {
+        this->initFoundations();
+        this->dealClosedTableau();
+        this->dealOpenTableau();
+    }
+
     bool Game::hasStock() const noexcept {
         return !this->stock.empty();
     }
@@ -61,7 +78,7 @@ namespace solitaire {
     }
 
     bool Game::stackTableau(std::size_t index, CardPile& cards) {
-        auto topBase = cards.peekBase();
+        const Card *topBase = cards.peekBase();
         if (topBase == nullptr) {
             return false;
         }
@@ -71,6 +88,20 @@ namespace solitaire {
         }
 
         this->openTableau[index].stack(cards);
+        return true;
+    }
+
+    bool Game::stackFoundation(Suit suit, CardPile& cards) {
+        if (cards.size() != 1) {
+            return false;
+        }
+        const Card *single = cards.peekBase();
+
+        if (!canStackInFoundation(single->suit, this->foundation[single->suit], *single)) {
+            return false;
+        }
+
+        this->foundation[single->suit].stack(cards);
         return true;
     }
 
