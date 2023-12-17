@@ -40,11 +40,11 @@ namespace solitaire {
         bool faceUp;
 
     public:
-        const Suit suit;
         const Face face;
+        const Suit suit;
 
-        Card(Suit s, Face f): Card(s, f, false) {}
-        Card(Suit s, Face f, bool faceUp): suit(s), face(f), faceUp(faceUp) {}
+        Card(Face f, Suit s): Card(f, s, false) {}
+        Card(Face f, Suit s, bool faceUp): face(f), suit(s), faceUp(faceUp) {}
 
         void setFaceUp(bool faceUp);
         bool isFaceUp();

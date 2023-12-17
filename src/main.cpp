@@ -17,7 +17,7 @@ int main() {
     for (int s = CLUBS; s <= SPADES; s++) {
         Suit mySuit = static_cast<Suit>(s);
         for (int f = ACE; f <= KING; f++) {
-            Card c(static_cast<Suit>(s), static_cast<Face>(f));
+            Card c(static_cast<Face>(f), static_cast<Suit>(s));
             deck.add(c);
         }
     }
