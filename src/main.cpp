@@ -21,7 +21,7 @@ int main() {
     game.shuffleStock<>(rng);
     game.dealGame();
     game.turnStock();
-    cout << (*game.peekWaste()).suit << endl;
+    cout << (*game.peekWaste()) << endl;
 
     return 0;
 }

@@ -7,7 +7,7 @@ namespace solitaire {
         // to 3 and are both black, midpoints add to 3 and are both red.
         // any other pair will not add up to three, therefore we have
         // this function
-        return s1 + s2 != 3;
+        return static_cast<int>(s1) + static_cast<int>(s2) != 3;
     }
 
     bool canStackInTableau(const CardPile& pile, const Card& newCard) noexcept {
@@ -18,7 +18,10 @@ namespace solitaire {
         if (!suitsCanAlternate(oldTop->suit, newCard.suit)) {
             return false;
         }
-        return oldTop->face == newCard.face + 1;
+        Face newCardFace = newCard.face;
+
+        // I'm too lazy to implement operator+.
+        return oldTop->face == (++newCardFace);
     }
 
     bool canStackInFoundation(Suit foundationSuit, const CardPile& pile, const Card& newCard) noexcept {
@@ -28,8 +31,10 @@ namespace solitaire {
         if (pile.empty()) {
             return newCard.face == Face::ACE;
         }
-        const Card *oldTop = pile.peek();
-        return oldTop->face == newCard.face - 1;
+        Face oldTopFace = pile.peek()->face;
+
+        // I'm too lazy to implement operator+.
+        return (++oldTopFace) == newCard.face;
     }
 
     Game::Game() {
@@ -112,10 +117,9 @@ namespace solitaire {
     }
 
     void Game::initFullDeckInOrder() noexcept {
-        for (int s = SUITS_FIRST; s < SUITS_END; s++) {
-            Suit mySuit = static_cast<Suit>(s);
-            for (int f = FACES_FIRST; f < FACES_END; f++) {
-                Card *c = new Card(static_cast<Face>(f), static_cast<Suit>(s));
+        for (Suit s = Suit::FIRST; s < Suit::END; s++) {
+            for (Face f = Face::FIRST; f < Face::END; f++) {
+                Card *c = new Card(f, s);
                 this->allCards.push_back(c);
                 this->stock.add(c);
             }
@@ -123,8 +127,7 @@ namespace solitaire {
     }
 
     void Game::initFoundations() noexcept {
-        for (int i = CLUBS; i <= SPADES; i++) {
-            Suit s = static_cast<Suit>(i);
+        for (Suit s = Suit::FIRST; s < Suit::END; s++) {
             this->foundation.emplace(s, CardPile());
         }
     }

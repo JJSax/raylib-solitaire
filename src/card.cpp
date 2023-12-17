@@ -4,9 +4,33 @@
 #include <iostream>
 
 namespace solitaire {
+    Suit& operator++(Suit& s) {
+        s = static_cast<Suit>(static_cast<int>(s) + 1);
+        if (s > Suit::END) s = Suit::FIRST;
+        return s;
+    }
+
+    Suit operator++(Suit& s, int) {
+        Suit result(s);
+        ++s;
+        return result;
+    }
+
     std::ostream& operator<<(std::ostream& os, const Suit& suit) noexcept {
         static char suitChars[] = {'c', 'd', 'h', 's'};
         return os << suitChars[static_cast<int>(suit)];
+    }
+
+    Face& operator++(Face& f) {
+        f = static_cast<Face>(static_cast<int>(f) + 1);
+        if (f > Face::END) f = Face::FIRST;
+        return f;
+    }
+
+    Face operator++(Face& f, int) {
+        Face result(f);
+        ++f;
+        return result;
     }
 
     std::ostream& operator<<(std::ostream& os, const Face& face) noexcept {

@@ -7,21 +7,23 @@
 
 namespace solitaire {
     // weakest to strongest in poker order
-    enum Suit {
+    enum class Suit {
         CLUBS,
-        SUITS_FIRST = CLUBS,
+        FIRST = CLUBS,
         DIAMONDS,
         HEARTS,
         SPADES,
-        SUITS_END
+        END
     };
 
+    Suit& operator++(Suit& s);
+    Suit operator++(Suit& s, int);
     std::ostream& operator<<(std::ostream& os, const Suit& suit) noexcept;
 
     // in order for foundation
-    enum Face {
+    enum class Face {
         ACE = 1,
-        FACES_FIRST = ACE,
+        FIRST = ACE,
         TWO,
         THREE,
         FOUR,
@@ -34,9 +36,11 @@ namespace solitaire {
         JACK,
         QUEEN,
         KING,
-        FACES_END
+        END
     };
 
+    Face& operator++(Face& f);
+    Face operator++(Face& f, int);
     std::ostream& operator<<(std::ostream& os, const Face& face) noexcept;
 
     class Card {
