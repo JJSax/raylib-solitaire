@@ -99,7 +99,7 @@ LIBS :=
 # Compile flags
 #
 
-C_FLAGS = -L$(LIB_DIR) -I$(INC_DIR) $(addprefix -l,$(LIBS)) -std=c++17 -Wno-unused-command-line-argument
+C_FLAGS = -L$(LIB_DIR) -I$(INC_DIR) $(addprefix -l,$(LIBS)) -std=c++17
 
 
 #
