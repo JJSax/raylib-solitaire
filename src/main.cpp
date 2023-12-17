@@ -16,9 +16,10 @@ using namespace std;
 int main() {
     auto rng = std::default_random_engine();
     rng.seed(123UL);
-    Game<decltype(rng)> game(rng);
+
+    Game game(rng);
     game.turnStock();
-    cout << *game.peekWaste().value().lock() << endl;
+    cout << *game.peekWaste() << endl;
 
     return 0;
 }

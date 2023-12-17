@@ -8,10 +8,12 @@
 namespace solitaire {
     // weakest to strongest in poker order
     enum Suit {
+        SUITS_FIRST,
         CLUBS,
         DIAMONDS,
         HEARTS,
-        SPADES
+        SPADES,
+        SUITS_END
     };
 
     std::ostream& operator<<(std::ostream& os, const Suit& suit) noexcept;
@@ -19,6 +21,7 @@ namespace solitaire {
     // in order for foundation
     enum Face {
         ACE = 1,
+        FACES_FIRST = ACE,
         TWO,
         THREE,
         FOUR,
@@ -30,7 +33,8 @@ namespace solitaire {
         TEN,
         JACK,
         QUEEN,
-        KING
+        KING,
+        FACES_END
     };
 
     std::ostream& operator<<(std::ostream& os, const Face& face) noexcept;
@@ -53,14 +57,13 @@ namespace solitaire {
     };
 
     class CardPile {
-        std::deque<std::shared_ptr<Card>> cards;
+        std::deque<Card *> cards;
     public:
         virtual ~CardPile() noexcept {
             // NOP, shared pointers self destruct when out of scope
         }
 
-        void add(const Card& c) noexcept;
-        void add(std::shared_ptr<Card> c) noexcept;
+        void add(Card *c) noexcept;
 
         template<typename Iterator>
         void addRange(Iterator start, Iterator end) noexcept {
@@ -78,14 +81,17 @@ namespace solitaire {
             return this->cards.end();
         }
 
-        [[nodiscard]] std::optional<const std::weak_ptr<Card>> peek(std::size_t index=0) const noexcept;
+        [[nodiscard]] const Card *peek(std::size_t index=0) const noexcept;
+        [[nodiscard]] const Card *peekBase() const noexcept;
 
         // splits the deck, with the range [0, amount) being returned in a
         // new CardPile, and the remaining cards staying put as this deck's cards.
         // throws if amount > this->size()
         [[nodiscard]] CardPile *split(std::size_t amount);
+        void stack(CardPile& newTop) noexcept;
 
-        // throws if pile is empty
-        [[nodiscard]] std::shared_ptr<Card> takeTop();
+        // these throw if pile is empty
+        [[nodiscard]] Card *takeTop();
+        [[nodiscard]] Card *takeBase();
     };
 }

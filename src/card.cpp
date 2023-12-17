@@ -4,7 +4,6 @@
 #include <iostream>
 
 namespace solitaire {
-
     std::ostream& operator<<(std::ostream& os, const Suit& suit) noexcept {
         static char suitChars[] = {'c', 'd', 'h', 's'};
         return os << suitChars[static_cast<int>(suit)];
@@ -25,12 +24,7 @@ namespace solitaire {
     }
 
 
-    void CardPile::add(const Card& c) noexcept {
-        // top of the pile is index 0
-        this->cards.push_front(std::make_shared<Card>(c));
-    }
-
-    void CardPile::add(std::shared_ptr<Card> c) noexcept {
+    void CardPile::add(Card *c) noexcept {
         this->cards.push_front(c);
     }
 
@@ -43,12 +37,16 @@ namespace solitaire {
     }
 
 
-    std::optional<const std::weak_ptr<Card>> CardPile::peek(std::size_t index) const noexcept {
+    const Card *CardPile::peek(std::size_t index) const noexcept {
         if (this->cards.size() > index) {
             return this->cards[index];
         } else {
-            return {};
+            return nullptr;
         }
+    }
+
+    const Card *CardPile::peekBase() const noexcept {
+        return this->peek(this->cards.size() - 1);
     }
 
     CardPile *CardPile::split(std::size_t amount) {
@@ -56,7 +54,7 @@ namespace solitaire {
 
         for (std::size_t i = 0; i < amount; i++) {
             // get the card from top of pile
-            std::shared_ptr<Card> currentTop = std::move(this->cards[0]);
+            Card *currentTop = this->cards[0];
 
             // remove now-null item from this->cards
             this->cards.pop_front();
@@ -68,16 +66,29 @@ namespace solitaire {
         return newPile;
     }
 
-    std::shared_ptr<Card> CardPile::takeTop() {
+    void CardPile::stack(CardPile& newTop) noexcept {
+        while (!newTop.empty()) {
+            auto base = newTop.takeBase();
+            this->add(base);
+        }
+    }
+
+    Card *CardPile::takeTop() {
         if (this->empty()) throw NotEnoughCardsException();
 
-        // yoink unique pointer from the pile
-        std::shared_ptr<Card> top = std::move(this->cards[0]);
-
-        // remove now-null pointer
+        Card *top = this->cards[0];
         this->cards.pop_front();
 
         return top;
+    }
+
+    Card *CardPile::takeBase() {
+        if (this->empty()) throw NotEnoughCardsException();
+
+        Card *base = this->cards.back();
+        this->cards.pop_back();
+
+        return base;
     }
 
     std::ostream& operator<<(std::ostream& os, const Card& card) noexcept {

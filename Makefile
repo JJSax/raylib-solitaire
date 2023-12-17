@@ -336,6 +336,7 @@ all: $(BLD_DIR)/$(OUT)
 g: clean all
 
 run:
+	@printf "====================\n"
 	@$(RUN_CMD) | tee $(STDOUT_LOG)
 	@printf "====================\n"
 
@@ -370,7 +371,6 @@ $(BLD_DIR)/$(OUT): $(OBJECTS)
 	@printf "\n"
 	@printf "====================\n"
 	@printf " COMPILING COMPLETE \n"
-	@printf "====================\n"
 
 $(OBJ_DIR)/%.$(COMP_FILE):
 	@printf "Building -%s-... " $(notdir $(basename $<))
