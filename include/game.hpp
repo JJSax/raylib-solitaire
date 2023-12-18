@@ -36,9 +36,15 @@ namespace solitaire {
         const CardPile& getOpenTableau(std::size_t index) const;
         std::size_t getClosedTableauSize(std::size_t index) const;
 
-        // these transfer cards out of card pile
-        bool stackTableau(std::size_t index, CardPile& cards);
-        bool stackFoundation(Suit suit, CardPile& cards);
+        // takes amount cards out of tableau at index
+        std::unique_ptr<CardPile> splitTableau(std::size_t index, std::size_t amount);
+
+        // the next 2 transfer cards out of card pile, and return whether they succeeded
+        // put cards on top of tableau at index
+        bool stackTableau(std::size_t index, CardPile& cards) noexcept;
+
+        // card pile should have exactly 1 card in it, which is put on the foundation for suit
+        bool stackFoundation(Suit suit, CardPile& cards) noexcept;
 
     private:
         std::array<CardPile, NUM_TABLEAUS> openTableau;
@@ -55,5 +61,7 @@ namespace solitaire {
         void initFoundations() noexcept;
         void dealClosedTableau();
         void dealOpenTableau();
+
+        static void throwIfTableauIndexOutOfRange(std::size_t index);
     };
 }

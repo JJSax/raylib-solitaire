@@ -1,6 +1,8 @@
 #include "game.hpp"
 #include "except.hpp"
 
+#include <sstream>
+
 namespace solitaire {
     bool suitsCanAlternate(Suit s1, Suit s2) noexcept {
         // works due to the ordering of the suits: endpoints add
@@ -82,7 +84,14 @@ namespace solitaire {
         return this->closedTableau[index].size();
     }
 
-    bool Game::stackTableau(std::size_t index, CardPile& cards) {
+    std::unique_ptr<CardPile> Game::splitTableau(std::size_t index, std::size_t amount) {
+        throwIfTableauIndexOutOfRange(index);
+        CardPile *splitOff = this->openTableau[index].split(amount);
+        return std::unique_ptr<CardPile>(splitOff);
+    }
+
+    bool Game::stackTableau(std::size_t index, CardPile& cards) noexcept {
+        throwIfTableauIndexOutOfRange(index);
         const Card *topBase = cards.peekBase();
         if (topBase == nullptr) {
             return false;
@@ -96,11 +105,11 @@ namespace solitaire {
         return true;
     }
 
-    bool Game::stackFoundation(Suit suit, CardPile& cards) {
+    bool Game::stackFoundation(Suit suit, CardPile& cards) noexcept {
         if (cards.size() != 1) {
             return false;
         }
-        const Card *single = cards.peekBase();
+        const Card *single = cards.peek();
 
         if (!canStackInFoundation(single->suit, this->foundation[single->suit], *single)) {
             return false;
@@ -143,6 +152,14 @@ namespace solitaire {
     void Game::dealOpenTableau() {
         for (int i = 0; i < this->openTableau.size(); i++) {
             this->deal(this->openTableau[i]);
+        }
+    }
+
+    void Game::throwIfTableauIndexOutOfRange(std::size_t index) {
+        if (index >= Game::NUM_TABLEAUS) {
+            std::stringstream message("tableau at index ");
+            message << index << " does not exist";
+            throw std::out_of_range(message.str());
         }
     }
 }

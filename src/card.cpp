@@ -70,20 +70,20 @@ namespace solitaire {
     }
 
     const Card *CardPile::peekBase() const noexcept {
-        return this->peek(this->cards.size() - 1);
+        if (this->cards.size() > 0) {
+            return this->cards.back();
+        } else {
+            return nullptr;
+        }
     }
 
     CardPile *CardPile::split(std::size_t amount) {
         auto newPile = new CardPile();
+        if (amount > this->size()) throw NotEnoughCardsException();
 
         for (std::size_t i = 0; i < amount; i++) {
-            // get the card from top of pile
             Card *currentTop = this->cards[0];
-
-            // remove now-null item from this->cards
             this->cards.pop_front();
-
-            // add it to new pile (in reverse order)
             newPile->cards.push_back(currentTop);
         }
 
@@ -92,7 +92,7 @@ namespace solitaire {
 
     void CardPile::stack(CardPile& newTop) noexcept {
         while (!newTop.empty()) {
-            auto base = newTop.takeBase();
+            Card *base = newTop.takeBase();
             this->add(base);
         }
     }
