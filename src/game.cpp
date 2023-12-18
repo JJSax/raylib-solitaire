@@ -126,8 +126,8 @@ namespace solitaire {
     }
 
     void Game::initFullDeckInOrder() noexcept {
-        for (Suit s = Suit::FIRST; s < Suit::END; s++) {
-            for (Face f = Face::FIRST; f < Face::END; f++) {
+        for (Suit s = Suit::FIRST; s <= Suit::LAST; s++) {
+            for (Face f = Face::FIRST; f <= Face::LAST; f++) {
                 Card *c = new Card(f, s);
                 this->allCards.push_back(c);
                 this->stock.add(c);
@@ -136,7 +136,7 @@ namespace solitaire {
     }
 
     void Game::initFoundations() noexcept {
-        for (Suit s = Suit::FIRST; s < Suit::END; s++) {
+        for (Suit s = Suit::FIRST; s <= Suit::LAST; s++) {
             this->foundation.emplace(s, CardPile());
         }
     }
