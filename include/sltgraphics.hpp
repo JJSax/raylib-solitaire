@@ -28,7 +28,7 @@ namespace solitaire {
             return ggame;
         }
 
-        GraphicalGame(std::minstd_rand::result_type seed=0) {
+        GraphicalGame(std::minstd_rand::result_type seed) {
             auto rand = std::minstd_rand(seed);
             this->game = Game::createAndDealGame<std::minstd_rand>(rand);
         }
