@@ -27,6 +27,14 @@ namespace solitaire {
             std::shuffle(this->stock.begin(), this->stock.end(), rand);
         }
 
+        template<typename URNG>
+        static Game *create(URNG& rand) {
+            Game *g = new Game();
+            g->shuffleStock(rand);
+            g->deal();
+            return g;
+        }
+
         void dealGame();
 
         bool hasStock() const noexcept;
@@ -53,6 +61,8 @@ namespace solitaire {
         CardPile stock;
         CardPile waste;
         std::vector<Card *> allCards;
+
+        bool wasDealt;
 
         void deal(CardPile& onto);
 

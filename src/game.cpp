@@ -41,6 +41,7 @@ namespace solitaire {
 
     Game::Game() {
         this->initFullDeckInOrder();
+        this->wasDealt = false;
     }
 
     Game::~Game() {
@@ -51,9 +52,13 @@ namespace solitaire {
     }
 
     void Game::dealGame() {
+        if (wasDealt) {
+            throw InvalidStateException("Cannot 'deal' an already dealt game");
+        }
         this->initFoundations();
         this->dealClosedTableau();
         this->dealOpenTableau();
+        this->wasDealt = true;
     }
 
     bool Game::hasStock() const noexcept {
@@ -126,8 +131,8 @@ namespace solitaire {
     }
 
     void Game::initFullDeckInOrder() noexcept {
-        for (Suit s = Suit::FIRST; s <= Suit::LAST; s++) {
-            for (Face f = Face::FIRST; f <= Face::LAST; f++) {
+        for (Suit s = Suit::FIRST; s < Suit::END; s++) {
+            for (Face f = Face::FIRST; f < Face::END; f++) {
                 Card *c = new Card(f, s);
                 this->allCards.push_back(c);
                 this->stock.add(c);
@@ -136,7 +141,7 @@ namespace solitaire {
     }
 
     void Game::initFoundations() noexcept {
-        for (Suit s = Suit::FIRST; s <= Suit::LAST; s++) {
+        for (Suit s = Suit::FIRST; s < Suit::END; s++) {
             this->foundation.emplace(s, CardPile());
         }
     }
