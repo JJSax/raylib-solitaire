@@ -9,11 +9,11 @@ namespace solitaire {
     // weakest to strongest in poker order
     enum class Suit {
         CLUBS,
+        FIRST = CLUBS,
         DIAMONDS,
         HEARTS,
         SPADES,
-        FIRST = CLUBS,
-        LAST = SPADES
+        END
     };
 
     Suit& operator++(Suit& s);
@@ -23,6 +23,7 @@ namespace solitaire {
     // in order for foundation
     enum class Face {
         ACE = 1,
+        FIRST = ACE,
         TWO,
         THREE,
         FOUR,
@@ -35,8 +36,7 @@ namespace solitaire {
         JACK,
         QUEEN,
         KING,
-        FIRST = ACE,
-        LAST = KING
+        END
     };
 
     Face& operator++(Face& f);

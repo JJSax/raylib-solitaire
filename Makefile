@@ -92,7 +92,7 @@ SRC_PTRN := "*."$(SRC_FILE)
 #     LIBS := m GL
 #
 
-LIBS :=
+LIBS := raylib
 
 
 #

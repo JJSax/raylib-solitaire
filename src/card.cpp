@@ -6,7 +6,7 @@
 namespace solitaire {
     Suit& operator++(Suit& s) {
         s = static_cast<Suit>(static_cast<int>(s) + 1);
-        if (s > Suit::LAST) s = Suit::FIRST;
+        if (s > Suit::END) s = Suit::FIRST;
         return s;
     }
 
@@ -23,7 +23,7 @@ namespace solitaire {
 
     Face& operator++(Face& f) {
         f = static_cast<Face>(static_cast<int>(f) + 1);
-        if (f > Face::LAST) f = Face::FIRST;
+        if (f > Face::END) f = Face::FIRST;
         return f;
     }
 
