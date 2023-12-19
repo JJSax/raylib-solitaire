@@ -1,7 +1,7 @@
 #pragma once
 
-#include "game.hpp"
-#include "solitaireconfig.hpp"
+#include "slt.hpp"
+#include "sltconfig.hpp"
 
 extern "C" {
 #include <raylib.h>
@@ -22,15 +22,15 @@ namespace solitaire {
     public:
         // TODO load in card images
         template<typename URNG>
-        static GraphicalGame *create(URNG& rand) {
+        static GraphicalGame *createAndDealGame(URNG& rand) {
             GraphicalGame *ggame = new GraphicalGame();
-            ggame->game = Game::create(rand);
+            ggame->game = Game::createAndDealGame(rand);
             return ggame;
         }
 
         GraphicalGame(std::minstd_rand::result_type seed=0) {
             auto rand = std::minstd_rand(seed);
-            this->game = Game::create<std::minstd_rand>(rand);
+            this->game = Game::createAndDealGame<std::minstd_rand>(rand);
         }
 
         void draw() {

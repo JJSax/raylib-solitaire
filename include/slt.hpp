@@ -9,7 +9,6 @@
 #include "card.hpp"
 #include "except.hpp"
 
-
 namespace solitaire {
     bool suitsCanAlternate(Suit s1, Suit s2) noexcept;
     bool canStackInTableau(const CardPile& cardPile, const Card& newCard) noexcept;
@@ -28,10 +27,10 @@ namespace solitaire {
         }
 
         template<typename URNG>
-        static Game *create(URNG& rand) {
+        static Game *createAndDealGame(URNG& rand) {
             Game *g = new Game();
             g->shuffleStock(rand);
-            g->deal();
+            g->dealGame();
             return g;
         }
 
