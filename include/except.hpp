@@ -4,6 +4,8 @@
 
 namespace solitaire {
     class NotEnoughCardsException : std::exception {};
+    class TooManyCardsException : std::exception {};
+
     class InvalidStateException : std::exception {
         std::string msg;
 
@@ -16,6 +18,6 @@ namespace solitaire {
     };
 
     class InvalidCardPlacementException : std::exception {};
-    class MismatchedColorsException : InvalidCardPlacementException {};
-    class NonSequentialNumbersException : InvalidCardPlacementException {};
+    class MismatchedSuitsException : InvalidCardPlacementException {};
+    class NonSequentialFacesException : InvalidCardPlacementException {};
 }

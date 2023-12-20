@@ -22,7 +22,7 @@ int main() {
     auto rng = std::default_random_engine();
     rng.seed(123UL);
 
-    GraphicalGame *game = GraphicalGame::createAndDealGame(rng);
+    GraphicalGame *game = GraphicalGame::create(rng);
     // Game game;
     // game.shuffleStock(rng);
     // game.dealGame();

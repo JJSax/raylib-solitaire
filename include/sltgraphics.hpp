@@ -20,6 +20,11 @@ namespace solitaire {
 
         std::map<std::pair<Suit, Face>, Texture> cardTextures;
 
+        void renderCard(const Card& card, Vector2 position);
+        void renderCardPile(const CardPile& pile, Vector2 position);
+
+    public:
+
         GraphicalGame() {
             std::string basePath(CARD_TEXTURE_PATH_PREFIX);
             for (Suit s = Suit::FIRST; s < Suit::END; s++) {
@@ -35,11 +40,6 @@ namespace solitaire {
             }
         }
 
-        void drawCard(const Card& card, Vector2 position);
-        void drawCardPile(const CardPile& pile, Vector2 position);
-
-    public:
-
         ~GraphicalGame() {
             for (auto entry : this->cardTextures) {
                 Texture tex = entry.second;
@@ -49,7 +49,7 @@ namespace solitaire {
         }
 
         template<typename URNG>
-        static GraphicalGame *createAndDealGame(URNG& rand) {
+        static GraphicalGame *create(URNG& rand) {
             GraphicalGame *ggame = new GraphicalGame();
             ggame->game = Game::createAndDealGame(rand);
             return ggame;
@@ -57,7 +57,7 @@ namespace solitaire {
 
         GraphicalGame(std::minstd_rand::result_type seed) {
             auto rand = std::minstd_rand(seed);
-            this->game = Game::createAndDealGame<std::minstd_rand>(rand);
+            this->game = Game::createAndDealGame(rand);
         }
 
         void draw() {

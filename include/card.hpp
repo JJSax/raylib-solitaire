@@ -5,6 +5,7 @@
 #include <memory>
 #include <iosfwd>
 
+
 namespace solitaire {
     // weakest to strongest in poker order
     enum class Suit {
@@ -86,6 +87,31 @@ namespace solitaire {
         auto end() noexcept {
             return this->cards.end();
         }
+
+        auto cbegin() const noexcept {
+            return this->cards.cbegin();
+        }
+
+        auto cend() const noexcept {
+            return this->cards.cend();
+        }
+
+        auto rbegin() noexcept {
+            return this->cards.rbegin();
+        }
+
+        auto rend() noexcept {
+            return this->cards.rend();
+        }
+
+        auto crbegin() const noexcept {
+            return this->cards.crbegin();
+        }
+
+        auto crend() const noexcept {
+            return this->cards.crend();
+        }
+
 
         [[nodiscard]] const Card *peek(std::size_t index=0) const noexcept;
         [[nodiscard]] const Card *peekBase() const noexcept;

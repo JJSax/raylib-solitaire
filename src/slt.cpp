@@ -4,6 +4,10 @@
 #include <sstream>
 
 namespace solitaire {
+    bool suitsCanAlternate(Suit s1, Suit s2) noexcept;
+    void throwIfCantStackInTableau(const CardPile& cardPile, const Card& newCard);
+    void throwIfCantStackInFoundation(Suit foundationSuit, const CardPile& pile, const Card& newCard);
+
     bool suitsCanAlternate(Suit s1, Suit s2) noexcept {
         // works due to the ordering of the suits: endpoints add
         // to 3 and are both black, midpoints add to 3 and are both red.
@@ -12,36 +16,48 @@ namespace solitaire {
         return static_cast<int>(s1) + static_cast<int>(s2) != 3;
     }
 
-    bool canStackInTableau(const CardPile& pile, const Card& newCard) noexcept {
+    void throwIfCantStackInTableau(const CardPile& pile, const Card& newCard) {
         if (pile.empty()) {
-            return newCard.face == Face::KING;
+            if (newCard.face == Face::KING) {
+                return;
+            } else {
+                throw InvalidCardPlacementException();
+            }
         }
         const Card *oldTop = pile.peek();
         if (!suitsCanAlternate(oldTop->suit, newCard.suit)) {
-            return false;
+            throw MismatchedSuitsException();
         }
         Face newCardFace = newCard.face;
 
         // I'm too lazy to implement operator+.
-        return oldTop->face == (++newCardFace);
+        if (oldTop->face != (++newCardFace)) {
+            throw NonSequentialFacesException();
+        }
     }
 
-    bool canStackInFoundation(Suit foundationSuit, const CardPile& pile, const Card& newCard) noexcept {
+    void throwIfCantStackInFoundation(Suit foundationSuit, const CardPile& pile, const Card& newCard) {
         if (newCard.suit != foundationSuit) {
-            return false;
+            throw MismatchedSuitsException();
         }
         if (pile.empty()) {
-            return newCard.face == Face::ACE;
+            if (newCard.face == Face::ACE) {
+                return; // ok
+            } else {
+                throw InvalidCardPlacementException();
+            }
         }
         Face oldTopFace = pile.peek()->face;
 
         // I'm too lazy to implement operator+.
-        return (++oldTopFace) == newCard.face;
+        if ((++oldTopFace) != newCard.face) {
+            throw NonSequentialFacesException();
+        }
     }
 
     Game::Game() {
         this->initFullDeckInOrder();
-        this->wasDealt = false;
+        this->dealGame();
     }
 
     Game::~Game() {
@@ -52,13 +68,9 @@ namespace solitaire {
     }
 
     void Game::dealGame() {
-        if (wasDealt) {
-            throw InvalidStateException("Cannot 'deal' an already dealt game");
-        }
         this->initFoundations();
         this->dealClosedTableau();
         this->dealOpenTableau();
-        this->wasDealt = true;
     }
 
     bool Game::hasStock() const noexcept {
@@ -77,8 +89,8 @@ namespace solitaire {
         return this->waste.peek();
     }
 
-    Card *Game::takeWaste() {
-        return this->waste.takeTop();
+    std::unique_ptr<CardPile> Game::takeWaste() {
+        return std::unique_ptr<CardPile>(this->waste.split(1));
     }
 
     const CardPile& Game::getOpenTableau(std::size_t index) const {
@@ -94,32 +106,31 @@ namespace solitaire {
         return std::unique_ptr<CardPile>(splitOff);
     }
 
-    bool Game::stackTableau(std::size_t index, CardPile& cards) {
+    void Game::stackTableau(std::size_t index, CardPile& cards) {
         const Card *topBase = cards.peekBase();
         if (topBase == nullptr) {
-            return false;
+            throw NotEnoughCardsException();
         }
 
-        if (!canStackInTableau(this->openTableau.at(index), *topBase)) {
-            return false;
-        }
+        throwIfCantStackInTableau(this->openTableau.at(index), *topBase);
+        // if (!canStackInTableau(this->openTableau.at(index), *topBase)) {
+        //     return false;
+        // }
 
         this->openTableau.at(index).stack(cards);
-        return true;
     }
 
-    bool Game::stackFoundation(Suit suit, CardPile& cards) {
-        if (cards.size() != 1) {
-            return false;
+    void Game::stackFoundation(Suit suit, CardPile& cards) {
+        if (cards.empty()) {
+            throw NotEnoughCardsException();
+        } else if (cards.size() > 1) {
+            throw TooManyCardsException();
         }
         const Card *single = cards.peek();
 
-        if (!canStackInFoundation(single->suit, this->foundation.at(single->suit), *single)) {
-            return false;
-        }
+        throwIfCantStackInFoundation(single->suit, this->foundation.at(single->suit), *single);
 
         this->foundation.at(single->suit).stack(cards);
-        return true;
     }
 
 
