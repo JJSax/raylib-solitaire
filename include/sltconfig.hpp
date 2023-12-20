@@ -5,6 +5,8 @@ extern "C" {
 }
 
 namespace solitaire {
+    static const int NUM_TABLEAUS = 7;
+
     const Vector2 TARGET_RESOLUTION = {1280, 720};
 
     // suit, then face

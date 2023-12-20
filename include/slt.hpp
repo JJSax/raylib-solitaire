@@ -8,6 +8,7 @@
 
 #include "card.hpp"
 #include "except.hpp"
+#include "sltconfig.hpp"
 
 namespace solitaire {
     bool suitsCanAlternate(Suit s1, Suit s2) noexcept;
@@ -16,8 +17,6 @@ namespace solitaire {
 
     class Game {
     public:
-        static const int NUM_TABLEAUS = 7;
-
         Game();
         virtual ~Game();
 
