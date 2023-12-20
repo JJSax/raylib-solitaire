@@ -16,6 +16,7 @@ namespace solitaire {
         END
     };
 
+    char suitToChar(Suit s);
     Suit& operator++(Suit& s);
     Suit operator++(Suit& s, int);
     std::ostream& operator<<(std::ostream& os, const Suit& suit) noexcept;
@@ -39,6 +40,7 @@ namespace solitaire {
         END
     };
 
+    char faceToChar(Face f);
     Face& operator++(Face& f);
     Face operator++(Face& f, int);
     std::ostream& operator<<(std::ostream& os, const Face& face) noexcept;

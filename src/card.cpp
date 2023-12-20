@@ -4,6 +4,11 @@
 #include <iostream>
 
 namespace solitaire {
+    char suitToChar(Suit s) {
+        static char suitChars[] = {'c', 'd', 'h', 's', '\0'};
+        return  suitChars[static_cast<int>(s)];
+    }
+
     Suit& operator++(Suit& s) {
         s = static_cast<Suit>(static_cast<int>(s) + 1);
         if (s > Suit::END) s = Suit::FIRST;
@@ -17,8 +22,13 @@ namespace solitaire {
     }
 
     std::ostream& operator<<(std::ostream& os, const Suit& suit) noexcept {
-        static char suitChars[] = {'c', 'd', 'h', 's'};
-        return os << suitChars[static_cast<int>(suit)];
+        return os << suitToChar(suit);
+    }
+
+
+    char faceToChar(Face f) {
+        static char faceChars[] = {'\0', 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'X', 'J', 'Q', 'K', '\0'};
+        return faceChars[static_cast<int>(f)];
     }
 
     Face& operator++(Face& f) {
@@ -35,8 +45,7 @@ namespace solitaire {
 
     std::ostream& operator<<(std::ostream& os, const Face& face) noexcept {
         // starts at index 1, position 0 is a dummy value
-        static char faceChars[] = {'\0', 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'X', 'J', 'Q', 'K'};
-        return os << faceChars[static_cast<int>(face)];
+        return os << faceToChar(face);
     }
 
     void Card::setFaceUp(bool faceUp) noexcept {

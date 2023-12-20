@@ -48,10 +48,10 @@ namespace solitaire {
 
         // the next 2 transfer cards out of card pile, and return whether they succeeded
         // put cards on top of tableau at index
-        bool stackTableau(std::size_t index, CardPile& cards) noexcept;
+        bool stackTableau(std::size_t index, CardPile& cards);
 
         // card pile should have exactly 1 card in it, which is put on the foundation for suit
-        bool stackFoundation(Suit suit, CardPile& cards) noexcept;
+        bool stackFoundation(Suit suit, CardPile& cards);
 
     private:
         std::array<CardPile, NUM_TABLEAUS> openTableau;

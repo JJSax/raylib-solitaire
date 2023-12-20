@@ -11,12 +11,6 @@ extern "C" {
 using namespace solitaire;
 using namespace std;
 
-// TODO calculate these in runtime
-// TODO shrink window size by 2 if it wouldnt fit in the monitor
-const int baseWindowWidth = 1280;
-const int baseWindowHeight = 720;
-float gameScale = 1.0f;
-
 void detectClick(Game& game) {
     // TODO
 }
@@ -36,7 +30,7 @@ int main() {
     // game.turnStock();
     // cout << (*game.peekWaste()) << endl;
 
-    InitWindow(baseWindowWidth, baseWindowHeight, "Solitaire");
+    InitWindow(game->windowWidth(), game->windowHeight(), "Solitaire");
     while (!WindowShouldClose()) {
         BeginDrawing();
             ClearBackground(RAYWHITE);
@@ -49,5 +43,6 @@ int main() {
     }
     CloseWindow();
 
+    delete game;
     return 0;
 }

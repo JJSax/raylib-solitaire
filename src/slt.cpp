@@ -82,45 +82,43 @@ namespace solitaire {
     }
 
     const CardPile& Game::getOpenTableau(std::size_t index) const {
-        return this->openTableau[index];
+        return this->openTableau.at(index);
     }
 
     std::size_t Game::getClosedTableauSize(std::size_t index) const {
-        return this->closedTableau[index].size();
+        return this->closedTableau.at(index).size();
     }
 
     std::unique_ptr<CardPile> Game::splitTableau(std::size_t index, std::size_t amount) {
-        throwIfTableauIndexOutOfRange(index);
-        CardPile *splitOff = this->openTableau[index].split(amount);
+        CardPile *splitOff = this->openTableau.at(index).split(amount);
         return std::unique_ptr<CardPile>(splitOff);
     }
 
-    bool Game::stackTableau(std::size_t index, CardPile& cards) noexcept {
-        throwIfTableauIndexOutOfRange(index);
+    bool Game::stackTableau(std::size_t index, CardPile& cards) {
         const Card *topBase = cards.peekBase();
         if (topBase == nullptr) {
             return false;
         }
 
-        if (!canStackInTableau(this->openTableau[index], *topBase)) {
+        if (!canStackInTableau(this->openTableau.at(index), *topBase)) {
             return false;
         }
 
-        this->openTableau[index].stack(cards);
+        this->openTableau.at(index).stack(cards);
         return true;
     }
 
-    bool Game::stackFoundation(Suit suit, CardPile& cards) noexcept {
+    bool Game::stackFoundation(Suit suit, CardPile& cards) {
         if (cards.size() != 1) {
             return false;
         }
         const Card *single = cards.peek();
 
-        if (!canStackInFoundation(single->suit, this->foundation[single->suit], *single)) {
+        if (!canStackInFoundation(single->suit, this->foundation.at(single->suit), *single)) {
             return false;
         }
 
-        this->foundation[single->suit].stack(cards);
+        this->foundation.at(single->suit).stack(cards);
         return true;
     }
 
@@ -149,22 +147,14 @@ namespace solitaire {
     void Game::dealClosedTableau() {
         for (int i = 0; i < this->closedTableau.size(); i++) {
             for (int j = 0; j < i; j++) {
-                this->deal(this->closedTableau[i]);
+                this->deal(this->closedTableau.at(i));
             }
         }
     }
 
     void Game::dealOpenTableau() {
         for (int i = 0; i < this->openTableau.size(); i++) {
-            this->deal(this->openTableau[i]);
-        }
-    }
-
-    void Game::throwIfTableauIndexOutOfRange(std::size_t index) {
-        if (index >= Game::NUM_TABLEAUS) {
-            std::stringstream message("tableau at index ");
-            message << index << " does not exist";
-            throw std::out_of_range(message.str());
+            this->deal(this->openTableau.at(i));
         }
     }
 }
