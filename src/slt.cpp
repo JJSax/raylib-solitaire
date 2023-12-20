@@ -57,7 +57,6 @@ namespace solitaire {
 
     Game::Game() {
         this->initFullDeckInOrder();
-        this->dealGame();
     }
 
     Game::~Game() {

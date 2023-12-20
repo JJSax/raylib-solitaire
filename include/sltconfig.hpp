@@ -1,8 +1,6 @@
 #pragma once
 
-extern "C" {
 #include <raylib.h>
-}
 
 namespace solitaire {
     static const int NUM_TABLEAUS = 7;
@@ -15,5 +13,8 @@ namespace solitaire {
     // path is relative to CWD when running the executable
     // const char CARD_TEXTURE_PATH_PATTERN[] = "./assets/images/%c/%c.png";
 
-    const char CARD_TEXTURE_PATH_PREFIX[] = "./assets/images/";
+    const char CARD_TEXTURE_PATH_PREFIX[] = "assets/images/";
+    const char CARD_BACK_TEXTURE_PATH_SUFFIX[] = "back/A.png";
+
+    const Color BACKGROUND_COLOR = DARKGREEN;
 }

@@ -3,15 +3,15 @@
 #include "slt.hpp"
 #include "sltconfig.hpp"
 
-extern "C" {
 #include <raylib.h>
-}
 
 #include <memory>
 #include <sstream>
 
 namespace solitaire {
     class GraphicalGame {
+        GraphicalGame();
+
         Game *game;
         float windowScale = 1.0f;
         float cardScale = 1.0f;
@@ -19,34 +19,15 @@ namespace solitaire {
         CardPile *heldCards;
 
         std::map<std::pair<Suit, Face>, Texture> cardTextures;
+        Texture cardBackTexture;
 
         void renderCard(const Card& card, Vector2 position);
         void renderCardPile(const CardPile& pile, Vector2 position);
 
     public:
+        GraphicalGame(std::minstd_rand::result_type seed);
 
-        GraphicalGame() {
-            std::string basePath(CARD_TEXTURE_PATH_PREFIX);
-            for (Suit s = Suit::FIRST; s < Suit::END; s++) {
-                std::stringstream suitPath(basePath);
-                suitPath << '/' << suitToChar(s);
-                for (Face f = Face::FIRST; f < Face::END; f++) {
-                    std::stringstream cardPath(suitPath.str());
-                    cardPath << '/' << faceToChar(f) << ".png";
-
-                    Texture tex = LoadTexture(cardPath.str().c_str());
-                    this->cardTextures.emplace(std::make_pair(s, f), tex);
-                }
-            }
-        }
-
-        ~GraphicalGame() {
-            for (auto entry : this->cardTextures) {
-                Texture tex = entry.second;
-                UnloadTexture(tex);
-            }
-            delete this->game;
-        }
+        ~GraphicalGame();
 
         template<typename URNG>
         static GraphicalGame *create(URNG& rand) {
@@ -55,31 +36,10 @@ namespace solitaire {
             return ggame;
         }
 
-        GraphicalGame(std::minstd_rand::result_type seed) {
-            auto rand = std::minstd_rand(seed);
-            this->game = Game::createAndDealGame(rand);
-        }
+        void render();
+        void detectClick(Vector2 mousePosition);
 
-        void draw() {
-            // TODO stock
-            // TODO waste
-            // TODO foundations
-            // TODO closed tableaus
-            // TODO open tableaus
-
-            // TODO lifted pile
-        }
-
-        void detectClick(Vector2 mousePosition) {
-            // TODO clickzones
-        }
-
-        std::size_t windowWidth() {
-            return this->windowScale * TARGET_RESOLUTION.x;
-        }
-
-        std::size_t windowHeight() {
-            return this->windowScale * TARGET_RESOLUTION.y;
-        }
+        std::size_t windowWidth();
+        std::size_t windowHeight();
     };
 }

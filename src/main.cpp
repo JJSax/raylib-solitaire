@@ -1,6 +1,4 @@
-extern "C" {
 #include <raylib.h>
-}
 
 #include <iostream>
 #include <memory>
@@ -11,38 +9,33 @@ extern "C" {
 using namespace solitaire;
 using namespace std;
 
-void detectClick(Game& game) {
-    // TODO
-}
-
-void drawGame(const Game& game) {
-}
 
 int main() {
-    auto rng = std::default_random_engine();
-    rng.seed(123UL);
+    InitWindow(TARGET_RESOLUTION.x, TARGET_RESOLUTION.y, "Solitaire");
 
-    GraphicalGame *game = GraphicalGame::create(rng);
-    // Game game;
-    // game.shuffleStock(rng);
-    // game.dealGame();
+    GraphicalGame *game = nullptr;
+    try {
+        auto rng = std::default_random_engine();
+        rng.seed(123UL);
 
-    // game.turnStock();
-    // cout << (*game.peekWaste()) << endl;
+        game = GraphicalGame::create(rng);
 
-    InitWindow(game->windowWidth(), game->windowHeight(), "Solitaire");
-    while (!WindowShouldClose()) {
-        BeginDrawing();
-            ClearBackground(RAYWHITE);
-            game->draw();
-        EndDrawing();
+        while (!WindowShouldClose()) {
+            BeginDrawing();
+                ClearBackground(BACKGROUND_COLOR);
+                game->render();
+            EndDrawing();
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            game->detectClick(GetMousePosition());
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                game->detectClick(GetMousePosition());
+            }
         }
+
+    } catch (const std::exception& e) {
+        cout << e.what() << endl;
     }
     CloseWindow();
-
     delete game;
+    game = nullptr;
     return 0;
 }

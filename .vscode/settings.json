@@ -45,5 +45,12 @@
         "typeinfo": "cpp",
         "bit": "cpp",
         "map": "cpp"
-    }
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/vvilliam/Projects/solitaire",
+            "binaryPath": "/home/vvilliam/Projects/solitaire/build/out",
+            "binaryArgs": []
+        }
+    ]
 }
