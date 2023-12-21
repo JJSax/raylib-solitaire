@@ -47,18 +47,11 @@ namespace solitaire {
     std::ostream& operator<<(std::ostream& os, const Face& face) noexcept;
 
     class Card {
-    private:
-        bool faceUp;
-
     public:
         const Face face;
         const Suit suit;
 
-        Card(Face f, Suit s) noexcept: Card(f, s, false) {}
-        Card(Face f, Suit s, bool faceUp) noexcept: face(f), suit(s), faceUp(faceUp) {}
-
-        void setFaceUp(bool faceUp) noexcept;
-        bool isFaceUp() const noexcept;
+        Card(Face f, Suit s) noexcept: face(f), suit(s) {}
 
         friend std::ostream& operator<<(std::ostream& os, const Card& card) noexcept;
     };
@@ -66,10 +59,6 @@ namespace solitaire {
     class CardPile {
         std::deque<Card *> cards;
     public:
-        virtual ~CardPile() noexcept {
-            // NOP, shared pointers self destruct when out of scope
-        }
-
         void add(Card *c) noexcept;
 
         template<typename Iterator>

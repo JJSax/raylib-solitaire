@@ -48,15 +48,6 @@ namespace solitaire {
         return os << faceToChar(face);
     }
 
-    void Card::setFaceUp(bool faceUp) noexcept {
-        this->faceUp = faceUp;
-    }
-
-    bool Card::isFaceUp() const noexcept {
-        return this->faceUp;
-    }
-
-
     void CardPile::add(Card *c) noexcept {
         this->cards.push_front(c);
     }

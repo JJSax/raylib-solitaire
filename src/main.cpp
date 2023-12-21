@@ -13,12 +13,13 @@ using namespace std;
 int main() {
     InitWindow(TARGET_RESOLUTION.x, TARGET_RESOLUTION.y, "Solitaire");
 
-    GraphicalGame *game = nullptr;
+    std::unique_ptr<GraphicalGame> game = nullptr;
     try {
         auto rng = std::default_random_engine();
         rng.seed(123UL);
 
         game = GraphicalGame::create(rng);
+        game->calculateBounds();
 
         while (!WindowShouldClose()) {
             BeginDrawing();
@@ -30,12 +31,11 @@ int main() {
                 game->detectClick(GetMousePosition());
             }
         }
-
     } catch (const std::exception& e) {
         cout << e.what() << endl;
     }
+    // must deinit game while window is still open
+    game.release();
     CloseWindow();
-    delete game;
-    game = nullptr;
     return 0;
 }

@@ -12,28 +12,39 @@ namespace solitaire {
     class GraphicalGame {
         GraphicalGame();
 
+        void renderCard(const Card& card, Vector2 position);
+        void renderCardPileFaceUp(const CardPile& pile, Vector2 position);
+        void renderCardPileFaceDown(const std::size_t pileSize, Vector2 position);
+        void renderFaceDownCardPile(const CardPile& pile, Vector2 position);
+
+        int cardWidth();
+        int cardHeight();
+
+        Vector2 stockStart;
+        Vector2 wasteStart;
+        Vector2 tableauStart;
+
         Game *game;
-        float windowScale = 1.0f;
+        Vector2 actualResolution;
         float cardScale = 1.0f;
 
-        CardPile *heldCards;
+        std::unique_ptr<CardPile> heldCards;
 
         std::map<std::pair<Suit, Face>, Texture> cardTextures;
         Texture cardBackTexture;
-
-        void renderCard(const Card& card, Vector2 position);
-        void renderCardPile(const CardPile& pile, Vector2 position);
 
     public:
         GraphicalGame(std::minstd_rand::result_type seed);
 
         ~GraphicalGame();
 
+        void calculateBounds();
+
         template<typename URNG>
-        static GraphicalGame *create(URNG& rand) {
+        static std::unique_ptr<GraphicalGame> create(URNG& rand) {
             GraphicalGame *ggame = new GraphicalGame();
             ggame->game = Game::createAndDealGame(rand);
-            return ggame;
+            return std::unique_ptr<GraphicalGame>(ggame);
         }
 
         void render();

@@ -18,6 +18,9 @@ namespace solitaire {
         }
         auto backTexturePath = basePath + CARD_BACK_TEXTURE_PATH_SUFFIX;
         this->cardBackTexture = LoadTexture(backTexturePath.c_str());
+
+        // TODO calculate resolution
+        this->actualResolution = TARGET_RESOLUTION;
     }
 
     GraphicalGame::~GraphicalGame() {
@@ -34,15 +37,62 @@ namespace solitaire {
         this->game = Game::createAndDealGame(rand);
     }
 
+    int stackPxSize(int nFaceDown, int nFaceUp, int cardHeight) {
+        return (nFaceDown) * FACE_DOWN_STACKED_DISPLACEMENT +
+            (nFaceUp - 1) * STACKED_DISPLACEMENT +
+            MIN_CARD_SHOWN_SIZE;
+    }
+
+    void GraphicalGame::calculateBounds() {
+        float longestPossibleTableau = stackPxSize(
+            NUM_TABLEAUS - 1,
+            static_cast<int>(Face::END),
+            this->cardHeight()
+        );
+        // float stockAndWasteWidth = this->cardWidth() + 2 * SMALL_SPACING;
+        float stockY = (this->actualResolution.y - this->cardHeight()) / 2;
+        this->stockStart = { TINY_SPACING, stockY };
+        this->wasteStart = { this->stockStart.x + this->cardWidth() + TINY_SPACING, stockY };
+
+        float stockAndWasteWidth = this->wasteStart.x + this->cardWidth() + SMALL_SPACING;
+
+        this->tableauStart = { stockAndWasteWidth, longestPossibleTableau };
+        // TODO
+        this->cardScale = 0.5f;
+    }
+
     void GraphicalGame::render() {
-        // TODO stock
+        auto king = this->cardTextures.at(std::make_pair(Suit::SPADES, Face::KING));
+        DrawTextureV(this->cardBackTexture, this->stockStart, WHITE);
+        DrawTextureV(king, this->wasteStart, WHITE);
+        // TODO empty stock draw transparent card
         // TODO waste
         // TODO foundations
-        // TODO closed tableaus
-        // TODO open tableaus
+
+        float x = this->tableauStart.x;
+        int deltaX = this->cardBackTexture.width + TINY_SPACING;
+        for (int n = 0; n < 7; n++) {
+            float y = windowHeight() - this->tableauStart.y;
+            for (int i = 0; i < n; i++) {
+                DrawTexture(this->cardBackTexture, x, y, WHITE);
+                y += FACE_DOWN_STACKED_DISPLACEMENT;
+            }
+            for (int i = 0; i < 13; i++) {
+                DrawTexture(king, x, y, WHITE);
+                y += STACKED_DISPLACEMENT;
+            }
+            x += deltaX;
+        }
 
         // TODO lifted pile
-        DrawTexture(this->cardBackTexture, 100, 100, WHITE);
+    }
+
+    int GraphicalGame::cardWidth() {
+        return this->cardScale * this->cardBackTexture.width;
+    }
+
+    int GraphicalGame::cardHeight() {
+        return this->cardScale * this->cardBackTexture.height;
     }
 
     void GraphicalGame::detectClick(Vector2 mousePosition) {
@@ -50,10 +100,10 @@ namespace solitaire {
     }
 
     std::size_t GraphicalGame::windowWidth() {
-        return this->windowScale * TARGET_RESOLUTION.x;
+        return this->actualResolution.x;
     }
 
     std::size_t GraphicalGame::windowHeight() {
-        return this->windowScale * TARGET_RESOLUTION.y;
+        return this->actualResolution.y;
     }
 }
