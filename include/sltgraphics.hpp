@@ -13,14 +13,15 @@ namespace solitaire {
         GraphicalGame();
 
         void renderCard(const Card& card, Vector2 position);
+        void renderCardFaceDown(Vector2 position);
+        void renderStock();
         void renderCardPileFaceUp(const CardPile& pile, Vector2 position);
-        void renderCardPileFaceDown(const std::size_t pileSize, Vector2 position);
-        void renderFaceDownCardPile(const CardPile& pile, Vector2 position);
+        void renderCardPileFaceDown(std::size_t pileSize, Vector2& position);
 
         int cardWidth();
         int cardHeight();
 
-        Vector2 stockStart;
+        Vector2 stockPosition;
         Vector2 wasteStart;
         Vector2 tableauStart;
 
@@ -52,5 +53,7 @@ namespace solitaire {
 
         std::size_t windowWidth();
         std::size_t windowHeight();
+
+        friend std::unique_ptr<GraphicalGame> debugScript(std::unique_ptr<GraphicalGame> game);
     };
 }

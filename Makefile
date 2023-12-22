@@ -99,7 +99,7 @@ LIBS := raylib
 # Compile flags
 #
 
-C_FLAGS = -L$(LIB_DIR) -I$(INC_DIR) $(addprefix -l,$(LIBS)) -std=c++17
+C_FLAGS = -L$(LIB_DIR) -I$(INC_DIR) $(addprefix -l,$(LIBS)) -std=c++17 -O0
 
 
 #
@@ -287,6 +287,10 @@ VPATH += $(SRC_SUBDIR)
 RUN_CMD := $(BLD_DIR)/$(OUT)
 
 debug_mode = 
+
+ifneq (,$(DEBUG))
+debug_mode = yep
+endif
 
 ifneq (,$(findstring g,$(MAKECMDGOALS)))
 debug_mode = yep

@@ -77,11 +77,11 @@ namespace solitaire {
             return this->cards.end();
         }
 
-        auto cbegin() const noexcept {
+        auto begin() const noexcept {
             return this->cards.cbegin();
         }
 
-        auto cend() const noexcept {
+        auto end() const noexcept {
             return this->cards.cend();
         }
 
@@ -93,11 +93,11 @@ namespace solitaire {
             return this->cards.rend();
         }
 
-        auto crbegin() const noexcept {
+        auto rbegin() const noexcept {
             return this->cards.crbegin();
         }
 
-        auto crend() const noexcept {
+        auto rend() const noexcept {
             return this->cards.crend();
         }
 
