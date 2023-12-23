@@ -88,6 +88,10 @@ namespace solitaire {
         return this->waste.peek();
     }
 
+    const Card *Game::peekFoundation(Suit s) const {
+        return this->foundation.at(s).peek();
+    }
+
     std::unique_ptr<CardPile> Game::takeWaste() {
         return std::unique_ptr<CardPile>(this->waste.split(1));
     }

@@ -40,11 +40,25 @@ namespace solitaire {
         /// @return nullptr if the waste is empty; a pointer to the top card otherwise.
         const Card *peekWaste() const noexcept;
 
-        /// @brief Take the card on top of the waste.
+        /// @brief Gets the top card of the foundation for the Suit s.
+        /// @param s Suit whose foundation's top card is desired.
+        /// @throws std::out_of_range if s is not one of the 4 core Suits.
+        /// @return nullptr if the foundation is empty; a pointer to the top card otherwise.
+        const Card *peekFoundation(Suit s) const;
+
+        /// @brief Takes the card on top of the waste.
         /// @throws solitaire::NotEnoughCardsException If the waste is empty.
         /// @return A 1 element CardPile containing the taken card.
         std::unique_ptr<CardPile> takeWaste();
+
+        /// @brief Gets the open tableau at index index.
+        /// @param index Which tableau to fetch.
+        /// @return The open tableau at the given index.
         const CardPile& getOpenTableau(std::size_t index) const;
+
+        /// @brief Gets the size of the closed tableau at index index.
+        /// @param index Which tableau to access.
+        /// @return The size of the selected closed tableau.
         std::size_t getClosedTableauSize(std::size_t index) const;
 
         /// @brief Flips the top card of the closed tableau and puts it into the open tableau.

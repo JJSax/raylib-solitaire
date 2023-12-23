@@ -59,7 +59,6 @@ namespace solitaire {
             static_cast<int>(Face::COUNT),
             this->cardHeight()
         );
-        // float stockAndWasteWidth = this->cardWidth() + 2 * SMALL_SPACING;
         float stockY = (this->actualResolution.y - this->cardHeight()) / 2;
         this->stockRegion = {
             windowPadding,
@@ -98,9 +97,9 @@ namespace solitaire {
             static_cast<float>(this->cardHeight()),
         };
         auto foundationTopStripe = Rectangle {
+            this->tableauMacroRegion.x,
             0.0f,
-            0.0f,
-            this->actualResolution.x,
+            this->tableauMacroRegion.width,
             this->tableauMacroRegion.y
         };
         Vector2 foundationOrigin = Center(foundationSize, foundationTopStripe);
@@ -119,13 +118,17 @@ namespace solitaire {
         }
     }
 
+    void GraphicalGame::renderCardTexture(const Texture& texture, Vector2 position, Color color) {
+        DrawTextureEx(texture, position, 0, CARD_SCALE, color);
+    }
+
     void GraphicalGame::renderCard(const Card& card, Vector2 position) {
         auto tex = this->cardTextures.at(std::make_pair(card.suit, card.face));
-        DrawTextureEx(tex, position, 0, CARD_SCALE, WHITE);
+        this->renderCardTexture(tex, position);
     }
 
     void GraphicalGame::renderCardFaceDown(Vector2 position) {
-        DrawTextureEx(this->cardBackTexture, position, 0, CARD_SCALE, WHITE);
+        this->renderCardTexture(this->cardBackTexture, position);
     }
 
     void GraphicalGame::renderCardPileFaceUp(const CardPile& pile, Vector2 position) {
@@ -147,7 +150,7 @@ namespace solitaire {
         if (this->game->hasStock()) {
             this->renderCardFaceDown(pos);
         } else {
-            DrawTextureEx(this->cardBackTexture, pos, 0, CARD_SCALE, TRANSPARENT_CARD_COLOR);
+            this->renderCardTexture(this->cardBackTexture, pos, TRANSPARENT_CARD_COLOR);
         }
     }
 
@@ -158,24 +161,12 @@ namespace solitaire {
         }
     }
 
-    void GraphicalGame::renderFoundation() {
-
-    }
-
-    void GraphicalGame::render() {
-        this->renderStock();
-        this->renderWaste();
-        // this->renderCardFaceDown(this->stockRegion);
-        auto king = this->cardTextures.at(std::make_pair(Suit::SPADES, Face::KING));
-        // DrawTexture(king, this->wastePosition.x, this->wastePosition.y, WHITE);
-
-        float x = this->tableauMacroRegion.x;
-        int deltaX = this->cardBackTexture.width + TINY_SPACING;
-        for (int n = 0; n < 7; n++) {
-            float y = this->tableauMacroRegion.y;
-            auto tableauDrawPos = Vector2 {x, y};
-            this->renderCardPileFaceDown(this->game->getClosedTableauSize(n), tableauDrawPos);
-            this->renderCardPileFaceUp(this->game->getOpenTableau(n), tableauDrawPos);
+    void GraphicalGame::renderTableaus() {
+        auto tableauDrawPos = RectOrigin(this->tableauMacroRegion);
+        for (int i = 0; i < NUM_TABLEAUS; i++) {
+            Vector2 currTableauPosition = RectOrigin(this->tableauRegions[i]);
+            this->renderCardPileFaceDown(this->game->getClosedTableauSize(i), currTableauPosition);
+            this->renderCardPileFaceUp(this->game->getOpenTableau(i), currTableauPosition);
             // for (int i = 0; i < n; i++) {
             //     DrawTextureEx(this->cardBackTexture, Vector2 {x, y}, 0, CARD_SCALE, WHITE);
             //     y += FACE_DOWN_STACKED_DISPLACEMENT;
@@ -184,9 +175,28 @@ namespace solitaire {
             //     DrawTexture(king, x, y, WHITE);
             //     y += STACKED_DISPLACEMENT;
             // }
-            x += deltaX;
         }
-        // TODO foundations
+    }
+
+    void GraphicalGame::renderFoundations() {
+        for (Suit s = Suit::FIRST; s < Suit::END; s++) {
+            Rectangle region = this->foundationRegions[static_cast<int>(s)];
+            Vector2 position = RectOrigin(region);
+            const Card *foundationTop = this->game->peekFoundation(s);
+            if (foundationTop == nullptr) {
+                Texture ace = this->cardTextures.at(std::make_pair(s, Face::ACE));
+                this->renderCardTexture(ace, position, TRANSPARENT_CARD_COLOR);
+            } else {
+
+            }
+        }
+    }
+
+    void GraphicalGame::render() {
+        this->renderStock();
+        this->renderWaste();
+        this->renderTableaus();
+        this->renderFoundations();
 
         // TODO lifted pile
     }

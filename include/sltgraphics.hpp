@@ -12,6 +12,7 @@ namespace solitaire {
     class GraphicalGame {
         GraphicalGame();
 
+        void renderCardTexture(const Texture& texture, Vector2 position, Color=WHITE);
         void renderCard(const Card& card, Vector2 position);
         void renderCardFaceDown(Vector2 position);
         void renderCardPileFaceUp(const CardPile& pile, Vector2 position);
@@ -19,7 +20,8 @@ namespace solitaire {
 
         void renderStock();
         void renderWaste();
-        void renderFoundation();
+        void renderTableaus();
+        void renderFoundations();
 
         int cardWidth();
         int cardHeight();
