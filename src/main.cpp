@@ -10,15 +10,14 @@ using namespace solitaire;
 using namespace std;
 
 std::unique_ptr<GraphicalGame> solitaire::debugScript(std::unique_ptr<GraphicalGame> game) {
-    while (game->game->hasStock()) {
-        game->game->turnStock();
-    }
+    // while (game->game->hasStock()) {
+    //     game->game->turnStock();
+    // }
     return game;
 }
 
 int main() {
     InitWindow(TARGET_RESOLUTION.x, TARGET_RESOLUTION.y, "Solitaire");
-    SetWindowSize(TARGET_RESOLUTION.x, TARGET_RESOLUTION.y);
 
     std::unique_ptr<GraphicalGame> game = nullptr;
     try {

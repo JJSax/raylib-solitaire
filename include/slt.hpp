@@ -37,7 +37,7 @@ namespace solitaire {
         void turnStock();
 
         /// @brief Checks the card on top of the waste.
-        /// @return nullptr if the waste is empty; a poiter to the top card otherwise.
+        /// @return nullptr if the waste is empty; a pointer to the top card otherwise.
         const Card *peekWaste() const noexcept;
 
         /// @brief Take the card on top of the waste.

@@ -14,7 +14,8 @@ namespace solitaire {
         DIAMONDS,
         HEARTS,
         SPADES,
-        END
+        END,
+        COUNT = END
     };
 
     char suitToChar(Suit s);
@@ -38,7 +39,8 @@ namespace solitaire {
         JACK,
         QUEEN,
         KING,
-        END
+        END,
+        COUNT = END - FIRST
     };
 
     char faceToChar(Face f);

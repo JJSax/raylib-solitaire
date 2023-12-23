@@ -14,16 +14,23 @@ namespace solitaire {
 
         void renderCard(const Card& card, Vector2 position);
         void renderCardFaceDown(Vector2 position);
-        void renderStock();
         void renderCardPileFaceUp(const CardPile& pile, Vector2 position);
         void renderCardPileFaceDown(std::size_t pileSize, Vector2& position);
+
+        void renderStock();
+        void renderWaste();
+        void renderFoundation();
 
         int cardWidth();
         int cardHeight();
 
-        Vector2 stockPosition;
-        Vector2 wasteStart;
-        Vector2 tableauStart;
+        Rectangle stockRegion;
+        Rectangle wasteRegion;
+        Rectangle tableauMacroRegion;
+        std::array<Rectangle, static_cast<int>(Face::COUNT)> tableauRegions;
+        Rectangle foundationMacroRegion;
+        std::array<Rectangle, static_cast<int>(Suit::COUNT)> foundationRegions;
+
 
         Game *game;
         Vector2 actualResolution;

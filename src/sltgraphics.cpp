@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include "utils.hpp"
+
 namespace solitaire {
     GraphicalGame::GraphicalGame() {
         std::string basePath(CARD_TEXTURE_PATH_PREFIX);
@@ -45,30 +47,76 @@ namespace solitaire {
             MIN_CARD_SHOWN_SIZE;
     }
 
+    float getFoundationsWidth(int nSuits, int cardWidth, int spacing) {
+        return (nSuits) * cardWidth +
+            (nSuits - 1) * spacing;
+    }
+
     void GraphicalGame::calculateBounds() {
         auto const windowPadding = SMALL_SPACING;
         float tallestPossibleTableau = stackPxSize(
             NUM_TABLEAUS - 1,
-            static_cast<int>(Face::END),
+            static_cast<int>(Face::COUNT),
             this->cardHeight()
         );
         // float stockAndWasteWidth = this->cardWidth() + 2 * SMALL_SPACING;
         float stockY = (this->actualResolution.y - this->cardHeight()) / 2;
-        this->stockPosition = { windowPadding, stockY };
-        this->wasteStart = { this->stockPosition.x + this->cardWidth() + TINY_SPACING, stockY };
-        Vector2 wasteEnd = { this->wasteStart.x + this->cardWidth(), stockY + this->cardHeight() };
+        this->stockRegion = {
+            windowPadding,
+            stockY,
+            static_cast<float>(this->cardWidth()),
+            static_cast<float>(this->cardHeight()),
+        };
+        this->wasteRegion = {
+            this->stockRegion.x + this->stockRegion.width + TINY_SPACING,
+            stockY,
+            static_cast<float>(this->cardWidth()),
+            static_cast<float>(this->cardHeight())
+        };
 
-        // 1.
-        // this->tableauStart = { wasteEnd.x/*  + SMALL_SPACING */, tallestPossibleTableau };
+        auto tableausSpacing = TINY_SPACING;
+        auto tableausWidth = NUM_TABLEAUS * this->cardWidth() + (NUM_TABLEAUS - 1) * tableausSpacing;
+        this->tableauMacroRegion = Rectangle {
+            this->actualResolution.x - windowPadding - tableausWidth,
+            this->actualResolution.y - tallestPossibleTableau,
+            tableausWidth,
+            tallestPossibleTableau
+        };
 
-        // 2.
-        // auto tableausWidth = NUM_TABLEAUS * this->cardWidth() + (NUM_TABLEAUS - 1) * TINY_SPACING;
-        // float tableauMargin = (this->windowWidth() - wasteEnd.x - tableausWidth) / 2.0f;
-        // this->tableauStart = { tableauMargin, tallestPossibleTableau };
+        Rectangle currTableauRegion = this->tableauMacroRegion;
+        currTableauRegion.width = this->cardWidth();
+        currTableauRegion.height = this->cardHeight();
+        for (int i = 0; i < NUM_TABLEAUS; i++) {
+            this->tableauRegions[i] = currTableauRegion;
+            currTableauRegion.x += currTableauRegion.width + tableausSpacing;
+        }
 
-        // 3.
-        auto tableausWidth = NUM_TABLEAUS * this->cardWidth() + (NUM_TABLEAUS - 1) * TINY_SPACING;
-        this->tableauStart = Vector2 { this->actualResolution.x - windowPadding - tableausWidth, tallestPossibleTableau };
+
+        auto foundationsSpacing = TINY_SPACING;
+        auto foundationSize = Vector2 {
+            getFoundationsWidth(static_cast<int>(Suit::END), this->cardWidth(), foundationsSpacing),
+            static_cast<float>(this->cardHeight()),
+        };
+        auto foundationTopStripe = Rectangle {
+            0.0f,
+            0.0f,
+            this->actualResolution.x,
+            this->tableauMacroRegion.y
+        };
+        Vector2 foundationOrigin = Center(foundationSize, foundationTopStripe);
+        this->foundationMacroRegion = {
+            foundationOrigin.x,
+            foundationOrigin.y,
+            foundationSize.x,
+            foundationSize.y
+        };
+        Rectangle currFoundationRegion = this->foundationMacroRegion;
+        currFoundationRegion.width = this->cardWidth();
+        currFoundationRegion.height = this->cardHeight();
+        for (Suit i = Suit::FIRST; i < Suit::END; i++) {
+            this->foundationRegions[static_cast<int>(i)] = currFoundationRegion;
+            currFoundationRegion.x += currFoundationRegion.width + foundationsSpacing;
+        }
     }
 
     void GraphicalGame::renderCard(const Card& card, Vector2 position) {
@@ -78,14 +126,6 @@ namespace solitaire {
 
     void GraphicalGame::renderCardFaceDown(Vector2 position) {
         DrawTextureEx(this->cardBackTexture, position, 0, CARD_SCALE, WHITE);
-    }
-
-    void GraphicalGame::renderStock() {
-        if (this->game->hasStock()) {
-            this->renderCardFaceDown(this->stockPosition);
-        } else {
-            DrawTextureEx(this->cardBackTexture, this->stockPosition, 0, CARD_SCALE, TRANSPARENT_CARD_COLOR);
-        }
     }
 
     void GraphicalGame::renderCardPileFaceUp(const CardPile& pile, Vector2 position) {
@@ -102,18 +142,37 @@ namespace solitaire {
         }
     }
 
-    void GraphicalGame::render() {
-        auto king = this->cardTextures.at(std::make_pair(Suit::SPADES, Face::KING));
-        this->renderCardFaceDown(this->stockPosition);
-        DrawTexture(king, this->wasteStart.x, this->wasteStart.y, WHITE);
-        // TODO empty stock draw transparent card
-        // TODO waste
-        // TODO foundations
+    void GraphicalGame::renderStock() {
+        auto pos = RectOrigin(this->stockRegion);
+        if (this->game->hasStock()) {
+            this->renderCardFaceDown(pos);
+        } else {
+            DrawTextureEx(this->cardBackTexture, pos, 0, CARD_SCALE, TRANSPARENT_CARD_COLOR);
+        }
+    }
 
-        float x = this->tableauStart.x;
+    void GraphicalGame::renderWaste() {
+        auto wasteTop = this->game->peekWaste();
+        if (wasteTop != nullptr) {
+            this->renderCard(*wasteTop, RectOrigin(this->wasteRegion));
+        }
+    }
+
+    void GraphicalGame::renderFoundation() {
+
+    }
+
+    void GraphicalGame::render() {
+        this->renderStock();
+        this->renderWaste();
+        // this->renderCardFaceDown(this->stockRegion);
+        auto king = this->cardTextures.at(std::make_pair(Suit::SPADES, Face::KING));
+        // DrawTexture(king, this->wastePosition.x, this->wastePosition.y, WHITE);
+
+        float x = this->tableauMacroRegion.x;
         int deltaX = this->cardBackTexture.width + TINY_SPACING;
         for (int n = 0; n < 7; n++) {
-            float y = windowHeight() - this->tableauStart.y;
+            float y = this->tableauMacroRegion.y;
             auto tableauDrawPos = Vector2 {x, y};
             this->renderCardPileFaceDown(this->game->getClosedTableauSize(n), tableauDrawPos);
             this->renderCardPileFaceUp(this->game->getOpenTableau(n), tableauDrawPos);
@@ -127,6 +186,7 @@ namespace solitaire {
             // }
             x += deltaX;
         }
+        // TODO foundations
 
         // TODO lifted pile
     }
