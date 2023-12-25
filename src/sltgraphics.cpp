@@ -167,14 +167,6 @@ namespace solitaire {
             Vector2 currTableauPosition = RectOrigin(this->tableauRegions[i]);
             this->renderCardPileFaceDown(this->game->getClosedTableauSize(i), currTableauPosition);
             this->renderCardPileFaceUp(this->game->getOpenTableau(i), currTableauPosition);
-            // for (int i = 0; i < n; i++) {
-            //     DrawTextureEx(this->cardBackTexture, Vector2 {x, y}, 0, CARD_SCALE, WHITE);
-            //     y += FACE_DOWN_STACKED_DISPLACEMENT;
-            // }
-            // for (int i = 0; i < 13; i++) {
-            //     DrawTexture(king, x, y, WHITE);
-            //     y += STACKED_DISPLACEMENT;
-            // }
         }
     }
 
@@ -187,7 +179,7 @@ namespace solitaire {
                 Texture ace = this->cardTextures.at(std::make_pair(s, Face::ACE));
                 this->renderCardTexture(ace, position, TRANSPARENT_CARD_COLOR);
             } else {
-
+                this->renderCard(*foundationTop, position);
             }
         }
     }
@@ -201,16 +193,30 @@ namespace solitaire {
         // TODO lifted pile
     }
 
-    int GraphicalGame::cardWidth() {
+    void GraphicalGame::handleClick(Vector2 mousePosition) {
+        if (CheckCollisionPointRec(this->stockRegion, mousePosition)) {
+            try {
+                this->game->turnStock();
+            } catch (const NotEnoughCardsException& e) {
+                this->game->returnWasteToStock();
+            }
+        }
+    }
+
+    void GraphicalGame::handleDrag(Vector2 mousePosition) {
+        // TODO
+    }
+
+    void GraphicalGame::releaseDrag(Vector2 mousePosition) {
+        // TODO
+    }
+
+    float GraphicalGame::cardWidth() {
         return CARD_SCALE * this->cardBackTexture.width;
     }
 
-    int GraphicalGame::cardHeight() {
+    float GraphicalGame::cardHeight() {
         return CARD_SCALE * this->cardBackTexture.height;
-    }
-
-    void GraphicalGame::detectClick(Vector2 mousePosition) {
-        // TODO clickzones
     }
 
     std::size_t GraphicalGame::windowWidth() {

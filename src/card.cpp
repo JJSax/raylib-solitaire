@@ -115,6 +115,13 @@ namespace solitaire {
         return base;
     }
 
+    void CardPile::turnOnto(CardPile& newBase) {
+        for (auto card : *this) {
+            newBase.add(card);
+        }
+        this->cards.clear();
+    }
+
     std::ostream& operator<<(std::ostream& os, const Card& card) noexcept {
         return os << card.face << card.suit;
     }

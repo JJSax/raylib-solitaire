@@ -63,11 +63,6 @@ namespace solitaire {
     public:
         void add(Card *c) noexcept;
 
-        template<typename Iterator>
-        void addRange(Iterator start, Iterator end) noexcept {
-            this->cards.push_back(start, end);
-        }
-
         bool empty() const noexcept;
         std::size_t size() const noexcept;
 
@@ -116,5 +111,6 @@ namespace solitaire {
         // these throw if pile is empty
         [[nodiscard]] Card *takeTop();
         [[nodiscard]] Card *takeBase();
+        void turnOnto(CardPile& newBase);
     };
 }

@@ -18,3 +18,13 @@ Vector2 Center(Vector2 objectSize, Rectangle region) {
         Center(objectSize.y, Vector2 { region.y, region.y + region.height })
     };
 }
+
+bool CheckCollisionPointRec(Rectangle rec, Vector2 point) {
+    if (point.x < rec.x || point.y < rec.y) {
+        return false;
+    }
+    if (point.x - rec.x > rec.width || point.y - rec.y > rec.height) {
+        return false;
+    }
+    return true;
+}

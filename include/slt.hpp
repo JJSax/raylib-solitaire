@@ -36,6 +36,10 @@ namespace solitaire {
         /// @throws solitaire::NotEnoughCardsException If the stock is empty.
         void turnStock();
 
+        /// @brief Turns the waste pile onto the stock.
+        /// @throws solitaire::InvalidStateException if the stock is not empty.
+        void returnWasteToStock();
+
         /// @brief Checks the card on top of the waste.
         /// @return nullptr if the waste is empty; a pointer to the top card otherwise.
         const Card *peekWaste() const noexcept;
@@ -66,7 +70,7 @@ namespace solitaire {
         /// @throws std::out_of_range if there is no tableau at index index.
         /// @throws solitaire::InvalidStateException if either the open tableau at index is not empty,
         /// or if the closed tableau at index is empty.
-        void flipClosedTableauTop(std::size_t index);
+        void turnClosedTableauTop(std::size_t index);
 
         /// @brief Split off a CardPile off a specific open tableau.
         /// @param index Which tableau to split.

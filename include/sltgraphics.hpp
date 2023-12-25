@@ -23,8 +23,8 @@ namespace solitaire {
         void renderTableaus();
         void renderFoundations();
 
-        int cardWidth();
-        int cardHeight();
+        float cardWidth();
+        float cardHeight();
 
         Rectangle stockRegion;
         Rectangle wasteRegion;
@@ -58,7 +58,9 @@ namespace solitaire {
         }
 
         void render();
-        void detectClick(Vector2 mousePosition);
+        void handleClick(Vector2 mousePosition);
+        void handleDrag(Vector2 mousePosition);
+        void releaseDrag(Vector2 mousePosition);
 
         std::size_t windowWidth();
         std::size_t windowHeight();

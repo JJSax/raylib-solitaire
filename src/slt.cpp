@@ -84,6 +84,13 @@ namespace solitaire {
         this->waste.add(card);
     }
 
+    void Game::returnWasteToStock() {
+        if (this->hasStock()) {
+            throw InvalidStateException("Cannot turn waste onto stock if stock is not empty.");
+        }
+        this->waste.turnOnto(this->stock);
+    }
+
     const Card *Game::peekWaste() const noexcept {
         return this->waste.peek();
     }
