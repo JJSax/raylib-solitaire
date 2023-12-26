@@ -99,8 +99,30 @@ namespace solitaire {
         return this->foundation.at(s).peek();
     }
 
-    std::unique_ptr<CardPile> Game::takeWaste() {
-        return std::unique_ptr<CardPile>(this->waste.split(1));
+    void Game::returnHeldCards() {
+        if (this->heldCards.empty()) {
+            throw InvalidStateException("No cards are currently being held.");
+        }
+        switch (this->heldCardsSource) {
+            case PossibleHeldCardsSource::WASTE:
+                this->waste.stack(this->heldCards);
+                break;
+            // TODO
+        }
+    }
+
+    const CardPile& Game::getHeldCards() {
+        return this->heldCards;
+    }
+
+    void Game::takeWaste() {
+        if (!this->heldCards.empty()) {
+            throw InvalidStateException("Cannot hold cards while cards are already being held.");
+        }
+        CardPile *topCard = this->waste.split(1);
+        this->heldCards.stack(*topCard);
+        this->heldCardsSource = PossibleHeldCardsSource::WASTE;
+        delete topCard;
     }
 
     const CardPile& Game::getOpenTableau(std::size_t index) const {
@@ -123,10 +145,6 @@ namespace solitaire {
         }
 
         throwIfCantStackInTableau(this->openTableau.at(index), *topBase);
-        // if (!canStackInTableau(this->openTableau.at(index), *topBase)) {
-        //     return false;
-        // }
-
         this->openTableau.at(index).stack(cards);
     }
 

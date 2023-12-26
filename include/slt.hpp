@@ -50,10 +50,18 @@ namespace solitaire {
         /// @return nullptr if the foundation is empty; a pointer to the top card otherwise.
         const Card *peekFoundation(Suit s) const;
 
-        /// @brief Takes the card on top of the waste.
+        /// @brief Gets the currently held card pile.
+        /// @return The pile of currently held cards.
+        const CardPile& getHeldCards();
+
+        /// @brief Takes the card on top of the waste into the held cards.
         /// @throws solitaire::NotEnoughCardsException If the waste is empty.
-        /// @return A 1 element CardPile containing the taken card.
-        std::unique_ptr<CardPile> takeWaste();
+        /// @throws solitaire::InvalidStateException If there are already cards being held.
+        void takeWaste();
+
+        /// @brief Stacks the 1 element card pile on top of waste.
+        /// @throws solitaire::InvalidStateException If there are no held cards.
+        void returnHeldCards();
 
         /// @brief Gets the open tableau at index index.
         /// @param index Which tableau to fetch.
@@ -114,6 +122,18 @@ namespace solitaire {
         std::unordered_map<Suit, CardPile> foundation;
         CardPile stock;
         CardPile waste;
+        CardPile heldCards;
+
+        enum class PossibleHeldCardsSource {
+            WASTE,
+            TABLEAU,
+            FOUNDATION
+        } heldCardsSource;
+        union {
+            std::size_t tableauIndex;
+            Suit foundationSuit;
+        } heldSourcePileExtra;
+
         std::vector<Card *> allCards;
 
         void deal(CardPile& onto);

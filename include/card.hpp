@@ -106,6 +106,8 @@ namespace solitaire {
         // new CardPile, and the remaining cards staying put as this deck's cards.
         // throws if amount > this->size()
         [[nodiscard]] CardPile *split(std::size_t amount);
+
+        /// @brief Takes all cards from newTop and stacks them on top of this pile.
         void stack(CardPile& newTop) noexcept;
 
         // these throw if pile is empty

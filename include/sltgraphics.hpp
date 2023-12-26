@@ -22,9 +22,16 @@ namespace solitaire {
         void renderWaste();
         void renderTableaus();
         void renderFoundations();
+        void renderHeldCards();
 
         float cardWidth();
         float cardHeight();
+
+        void clickStock();
+        void clickWaste(Vector2 mousePosition);
+        // void clickTableau(std::size_t which, std::size_t stackHeight);
+
+        void cancelDrag();
 
         Rectangle stockRegion;
         Rectangle wasteRegion;
@@ -33,12 +40,12 @@ namespace solitaire {
         Rectangle foundationMacroRegion;
         std::array<Rectangle, static_cast<int>(Suit::COUNT)> foundationRegions;
 
-
         Game *game;
         Vector2 actualResolution;
         float cardScale = 1.0f;
 
-        std::unique_ptr<CardPile> heldCards;
+        Vector2 dragPosition;
+        Vector2 dragOffset;
 
         std::map<std::pair<Suit, Face>, Texture> cardTextures;
         Texture cardBackTexture;

@@ -1,6 +1,7 @@
 #include "sltgraphics.hpp"
 
 #include <utility>
+#include <raymath.h>
 
 #include "utils.hpp"
 
@@ -162,7 +163,6 @@ namespace solitaire {
     }
 
     void GraphicalGame::renderTableaus() {
-        auto tableauDrawPos = RectOrigin(this->tableauMacroRegion);
         for (int i = 0; i < NUM_TABLEAUS; i++) {
             Vector2 currTableauPosition = RectOrigin(this->tableauRegions[i]);
             this->renderCardPileFaceDown(this->game->getClosedTableauSize(i), currTableauPosition);
@@ -184,31 +184,62 @@ namespace solitaire {
         }
     }
 
+    void GraphicalGame::renderHeldCards() {
+        if (this->game->getHeldCards().empty()) {
+            return;
+        }
+        auto drawPos = Vector2Subtract(this->dragPosition, this->dragOffset);
+        this->renderCardPileFaceUp(this->game->getHeldCards(), drawPos);
+    }
+
     void GraphicalGame::render() {
         this->renderStock();
         this->renderWaste();
         this->renderTableaus();
         this->renderFoundations();
+        this->renderHeldCards();
+    }
 
-        // TODO lifted pile
+    void GraphicalGame::clickStock() {
+        if (this->game->hasStock()) {
+            this->game->turnStock();
+        } else {
+            this->game->returnWasteToStock();
+        }
+    }
+
+    void GraphicalGame::clickWaste(Vector2 mousePosition) {
+        this->game->takeWaste();
+        this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(this->wasteRegion));
+    }
+
+    void GraphicalGame::cancelDrag() {
+        this->game->returnHeldCards();
     }
 
     void GraphicalGame::handleClick(Vector2 mousePosition) {
-        if (CheckCollisionPointRec(this->stockRegion, mousePosition)) {
-            try {
-                this->game->turnStock();
-            } catch (const NotEnoughCardsException& e) {
-                this->game->returnWasteToStock();
-            }
+        if (CheckCollisionPointRec(mousePosition, this->stockRegion)) {
+            this->clickStock();
+            return;
+        }
+
+        if (CheckCollisionPointRec(mousePosition, this->wasteRegion)) {
+            this->clickWaste(mousePosition);
+            return;
         }
     }
 
     void GraphicalGame::handleDrag(Vector2 mousePosition) {
+        this->dragPosition = mousePosition;
         // TODO
     }
 
     void GraphicalGame::releaseDrag(Vector2 mousePosition) {
+        if (this->game->getHeldCards().empty()) {
+            return;
+        }
         // TODO
+        this->cancelDrag();
     }
 
     float GraphicalGame::cardWidth() {

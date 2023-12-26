@@ -7,4 +7,3 @@ Vector2 RectEnd(Rectangle rec);
 
 float Center(float objectSize, Vector2 region);
 Vector2 Center(Vector2 objectSize, Rectangle region);
-bool CheckCollisionPointRec(Rectangle rec, Vector2 point);
