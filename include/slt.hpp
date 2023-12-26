@@ -93,9 +93,8 @@ namespace solitaire {
         /// or if the closed tableau at index is empty.
         void turnClosedTableauTop(std::size_t index);
 
-        /// @brief Attempts to stack the given CardPile on top of the open tableau at index index.
+        /// @brief Attempts to stack the held CardPile on top of the open tableau at index index.
         /// @param index Which tableau to stack onto.
-        /// @param cards The cards to stack on top of the tableau.
         /// @throws std::out_of_range If there is no tableau at index index.
         /// @throws solitaire::NotEnoughCards If the card pile is empty.
         /// @throws solitaire::MismatchedSuitsException If the base card of the given pile has the same
@@ -104,15 +103,14 @@ namespace solitaire {
         /// follow the top card of the given open tableau.
         /// @throws solitaire::InvalidCardPlacementException If the open tableau is empty and the base
         /// of the pile is not a king.
-        void stackTableau(std::size_t index, CardPile& cards);
+        void stackTableau(std::size_t index);
 
-        /// @brief Attempts to stack the given CardPile on top of the foundation for the given Suit.
+        /// @brief Attempts to stack the held CardPile on top of the foundation for the given Suit.
         /// @param suit The suit whose foundation will be stacked onto.
-        /// @param cards The 1 element CardPile to stack on top of the foundation.
         /// @throws std::out_of_range If the given suit is invalid or the special value Suit::END.
-        /// @throws solitaire::NotEnoughCardsException If the CardPile is empty.
-        /// @throws solitaire::TooManyCards If the CardPile contains more than 1 card.
-        void stackFoundation(Suit suit, CardPile& cards);
+        /// @throws solitaire::NotEnoughCardsException If the held cards pile is empty.
+        /// @throws solitaire::TooManyCards If the held cards pile contains more than 1 card.
+        void stackFoundation(Suit suit);
 
     private:
         Game();

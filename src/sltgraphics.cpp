@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <raymath.h>
+#include <iostream>
 
 #include "utils.hpp"
 
@@ -133,8 +134,8 @@ namespace solitaire {
     }
 
     void GraphicalGame::renderCardPileFaceUp(const CardPile& pile, Vector2 position) {
-        for (const auto card : pile) {
-            this->renderCard(*card, position);
+        for (auto card = pile.rbegin(); card != pile.rend(); card++) {
+            this->renderCard(**card, position);
             position.y += STACKED_DISPLACEMENT;
         }
     }
@@ -288,27 +289,78 @@ namespace solitaire {
 
     void GraphicalGame::handleDrag(Vector2 mousePosition) {
         this->dragPosition = mousePosition;
-        // TODO
-    }
-
-    void GraphicalGame::cancelDrag() {
-        this->game->returnHeldCards();
+        // TODO ?
     }
 
     void GraphicalGame::releaseDrag(Vector2 mousePosition) {
         if (this->game->getHeldCards().empty()) {
             return;
         }
-        // TODO
+        for (Suit s = Suit::FIRST; s < Suit::END; s++) {
+            float score = this->cardDragOverlapScore(this->foundationRegions.at(s));
+            if (score >= CARD_SLOT_MIN_OVERLAP_AREA) {
+                try {
+                    this->game->stackFoundation(s);
+                } catch (const std::exception& e) {
+                    std::cerr << "Could not stack " << *this->game->getHeldCards().peek();
+                    std::cerr << " onto foundation " << s << ": ";
+                    std::cerr << e.what() << std::endl;
+                    this->cancelDrag();
+                }
+                return;
+            }
+        }
+
+        for (std::size_t i = 0; i < NUM_TABLEAUS; i++) {
+            float score = this->cardDragOverlapScore(this->tableauRegions.at(i));
+            if (score >= CARD_SLOT_MIN_OVERLAP_AREA) {
+                try {
+                    this->game->stackTableau(i);
+                } catch (const std::exception& e) {
+                    std::cerr << "Could not stack " << *this->game->getHeldCards().peek();
+                    std::cerr << " onto tableau " << i << ": ";
+                    std::cerr << e.what() << std::endl;
+                    this->cancelDrag();
+                }
+                return;
+            }
+        }
+        // TODO try stacking foundation
+        // dont forget the early return
+
         this->cancelDrag();
     }
 
+    void GraphicalGame::cancelDrag() {
+        this->game->returnHeldCards();
+    }
+
     float GraphicalGame::cardWidth() {
-        return CARD_SCALE * this->cardBackTexture.width;
+        static float w = CARD_SCALE * this->cardBackTexture.width;
+        return w;
     }
 
     float GraphicalGame::cardHeight() {
-        return CARD_SCALE * this->cardBackTexture.height;
+        static float h = CARD_SCALE * this->cardBackTexture.height;
+        return h;
+    }
+
+    float GraphicalGame::cardArea() {
+        return this->cardWidth() * this->cardHeight();
+    }
+
+    float GraphicalGame::cardDragOverlapScore(Rectangle region) {
+        static float maxScore = this->cardArea();
+        Vector2 currentCardDragOrigin = Vector2Subtract(this->dragPosition, this->dragOffset);
+        Rectangle currentCardDrag = {
+            currentCardDragOrigin.x,
+            currentCardDragOrigin.y,
+            this->cardWidth(),
+            this->cardHeight()
+        };
+        float score = IntersectionArea(currentCardDrag, region);
+        float normalizedScore = score / maxScore;
+        return normalizedScore;
     }
 
     std::size_t GraphicalGame::windowWidth() {

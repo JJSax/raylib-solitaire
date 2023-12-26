@@ -26,19 +26,21 @@ namespace solitaire {
 
         float cardWidth();
         float cardHeight();
+        float cardArea();
+
+        float cardDragOverlapScore(Rectangle region);
 
         void clickStock();
         void clickWaste(Vector2 mousePosition);
         void clickFoundation(Suit which, Vector2 mousePosition);
         void clickTableau(std::size_t which, Vector2 mousePosition);
-        // void clickTableau(std::size_t which, std::size_t stackHeight);
 
         void cancelDrag();
 
         Rectangle stockRegion;
         Rectangle wasteRegion;
         Rectangle tableauMacroRegion;
-        std::array<Rectangle, static_cast<int>(Face::COUNT)> tableauRegions;
+        std::array<Rectangle, NUM_TABLEAUS> tableauRegions;
         Rectangle foundationMacroRegion;
         std::unordered_map<Suit, Rectangle> foundationRegions;
 
@@ -73,7 +75,5 @@ namespace solitaire {
 
         std::size_t windowWidth();
         std::size_t windowHeight();
-
-        friend std::unique_ptr<GraphicalGame> debugScript(std::unique_ptr<GraphicalGame> game);
     };
 }

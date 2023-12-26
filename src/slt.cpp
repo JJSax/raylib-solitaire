@@ -175,27 +175,26 @@ namespace solitaire {
         return this->closedTableau.at(index).size();
     }
 
-    void Game::stackTableau(std::size_t index, CardPile& cards) {
-        const Card *topBase = cards.peekBase();
-        if (topBase == nullptr) {
+    void Game::stackTableau(std::size_t index) {
+        if (this->heldCards.empty()) {
             throw NotEnoughCardsException();
         }
 
-        throwIfCantStackInTableau(this->openTableau.at(index), *topBase);
-        this->openTableau.at(index).stack(cards);
+        throwIfCantStackInTableau(this->openTableau.at(index), *this->heldCards.peekBase());
+        this->openTableau.at(index).stack(this->heldCards);
     }
 
-    void Game::stackFoundation(Suit suit, CardPile& cards) {
-        if (cards.empty()) {
+    void Game::stackFoundation(Suit suit) {
+        if (this->heldCards.empty()) {
             throw NotEnoughCardsException();
-        } else if (cards.size() > 1) {
+        } else if (this->heldCards.size() > 1) {
             throw TooManyCardsException();
         }
-        const Card *single = cards.peek();
+        const Card *single = this->heldCards.peek();
 
-        throwIfCantStackInFoundation(single->suit, this->foundation.at(single->suit), *single);
+        throwIfCantStackInFoundation(suit, this->foundation.at(suit), *single);
 
-        this->foundation.at(single->suit).stack(cards);
+        this->foundation.at(suit).stack(this->heldCards);
     }
 
 

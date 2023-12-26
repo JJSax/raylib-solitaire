@@ -3,10 +3,10 @@
 #include <exception>
 
 namespace solitaire {
-    class NotEnoughCardsException : std::exception {};
-    class TooManyCardsException : std::exception {};
+    class NotEnoughCardsException : public std::exception {};
+    class TooManyCardsException : public std::exception {};
 
-    class InvalidStateException : std::exception {
+    class InvalidStateException : public std::exception {
         std::string msg;
 
     public:
@@ -17,7 +17,7 @@ namespace solitaire {
         }
     };
 
-    class InvalidCardPlacementException : std::exception {};
-    class MismatchedSuitsException : InvalidCardPlacementException {};
-    class NonSequentialFacesException : InvalidCardPlacementException {};
+    class InvalidCardPlacementException : public std::exception {};
+    class MismatchedSuitsException : public InvalidCardPlacementException {};
+    class NonSequentialFacesException : public InvalidCardPlacementException {};
 }

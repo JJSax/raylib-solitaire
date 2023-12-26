@@ -7,3 +7,5 @@ Vector2 RectEnd(Rectangle rec);
 
 float Center(float objectSize, Vector2 region);
 Vector2 Center(Vector2 objectSize, Rectangle region);
+
+float IntersectionArea(Rectangle r1, Rectangle r2);

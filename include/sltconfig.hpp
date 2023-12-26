@@ -16,6 +16,8 @@ namespace solitaire {
 
     const Color BACKGROUND_COLOR = DARKGREEN;
 
+    const float CARD_SLOT_MIN_OVERLAP_AREA = 0.4f;
+
     // how many pixels cards on top of each other will be offset by
     const int STACKED_DISPLACEMENT = 30;
     // same, but for face down cards
