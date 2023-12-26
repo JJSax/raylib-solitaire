@@ -84,6 +84,17 @@ namespace solitaire {
         this->waste.add(card);
     }
 
+    void Game::turnClosedTableauTop(std::size_t index) {
+        if (!this->openTableau.at(index).empty()) {
+            throw InvalidStateException("Cannot flip closed tableau while there are cards above it in the open tableau.");
+        }
+        if (this->closedTableau.at(index).empty()) {
+            throw NotEnoughCardsException();
+        }
+        auto card = this->closedTableau.at(index).takeTop();
+        this->openTableau.at(index).add(card);
+    }
+
     void Game::returnWasteToStock() {
         if (this->hasStock()) {
             throw InvalidStateException("Cannot turn waste onto stock if stock is not empty.");
@@ -104,13 +115,19 @@ namespace solitaire {
             throw InvalidStateException("No cards are currently being held.");
         }
         switch (this->heldCardsSource) {
+            Suit s;
+            std::size_t index;
             case PossibleHeldCardsSource::WASTE:
                 this->waste.stack(this->heldCards);
                 break;
             case PossibleHeldCardsSource::FOUNDATION:
-                Suit s = this->heldSourcePileExtra.foundationSuit;
+                s = this->heldSourcePileExtra.foundationSuit;
                 this->foundation.at(s).stack(this->heldCards);
-            // TODO
+                break;
+            case PossibleHeldCardsSource::TABLEAU:
+                index = this->heldSourcePileExtra.tableauIndex;
+                this->openTableau.at(index).stack(this->heldCards);
+                break;
         }
     }
 
@@ -141,17 +158,21 @@ namespace solitaire {
         delete topCard;
     }
 
+    void Game::takeTableau(std::size_t index, std::size_t amount) {
+        this->throwIfAttemptingToHoldMoreCards();
+        CardPile *split = this->openTableau.at(index).split(amount);
+        this->heldCards.stack(*split);
+        this->heldCardsSource = PossibleHeldCardsSource::TABLEAU;
+        this->heldSourcePileExtra.tableauIndex = index;
+        delete split;
+    }
+
     const CardPile& Game::getOpenTableau(std::size_t index) const {
         return this->openTableau.at(index);
     }
 
     std::size_t Game::getClosedTableauSize(std::size_t index) const {
         return this->closedTableau.at(index).size();
-    }
-
-    std::unique_ptr<CardPile> Game::splitTableau(std::size_t index, std::size_t amount) {
-        CardPile *splitOff = this->openTableau.at(index).split(amount);
-        return std::unique_ptr<CardPile>(splitOff);
     }
 
     void Game::stackTableau(std::size_t index, CardPile& cards) {

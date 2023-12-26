@@ -65,6 +65,13 @@ namespace solitaire {
         /// @throws solitaire::InvalidStateException If there are already cards being held.
         void takeFoundation(Suit s);
 
+        /// @brief Takes the amount top cards of the open tableau at index index.
+        /// @param index Which tableau to take cards from.
+        /// @param amount How many cards to take from the tableau.
+        /// @throws solitaire::NotEnoughCardsException If there arent enough cards in the open tableau to take.
+        /// @throws solitaire::InvalidStateException If there are already cards being held.
+        void takeTableau(std::size_t index, std::size_t amount);
+
         /// @brief Stacks the 1 element card pile on top of waste.
         /// @throws solitaire::InvalidStateException If there are no held cards.
         void returnHeldCards();
@@ -85,14 +92,6 @@ namespace solitaire {
         /// @throws solitaire::InvalidStateException if either the open tableau at index is not empty,
         /// or if the closed tableau at index is empty.
         void turnClosedTableauTop(std::size_t index);
-
-        /// @brief Split off a CardPile off a specific open tableau.
-        /// @param index Which tableau to split.
-        /// @param amount How many cards to take off the open tableau.
-        /// @throws std::out_of_range If there is no tableau at index index.
-        /// @throws solitaire::NotEnoughCardsException If there are not at least amount cards in the open tableau.
-        /// @return A CardPile containing the split off cards.
-        std::unique_ptr<CardPile> splitTableau(std::size_t index, std::size_t amount);
 
         /// @brief Attempts to stack the given CardPile on top of the open tableau at index index.
         /// @param index Which tableau to stack onto.

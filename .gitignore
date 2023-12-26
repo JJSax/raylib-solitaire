@@ -2,7 +2,7 @@
 /src/.obj/*
 /src/.dep/*
 /lib/*
-/build/*
+/out
 !**/.gitkeep
 *.log
 

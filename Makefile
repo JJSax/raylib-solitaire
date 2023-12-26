@@ -391,7 +391,7 @@ endif
 	@echo "$(OBJ_DIR:./%=/%)/*" >> .gitignore
 	@echo "$(DEP_DIR:./%=/%)/*" >> .gitignore
 	@echo "$(LIB_DIR:./%=/%)/*" >> .gitignore
-	@echo "$(BLD_DIR:./%=/%)/*" >> .gitignore
+	@echo "/$(OUT)" >> .gitignore
 	@echo "!**/.gitkeep" >> .gitignore
 
 tree: .gitignore

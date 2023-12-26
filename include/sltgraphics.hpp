@@ -30,6 +30,7 @@ namespace solitaire {
         void clickStock();
         void clickWaste(Vector2 mousePosition);
         void clickFoundation(Suit which, Vector2 mousePosition);
+        void clickTableau(std::size_t which, Vector2 mousePosition);
         // void clickTableau(std::size_t which, std::size_t stackHeight);
 
         void cancelDrag();

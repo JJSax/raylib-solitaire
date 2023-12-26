@@ -85,7 +85,7 @@ namespace solitaire {
 
         Rectangle currTableauRegion = this->tableauMacroRegion;
         currTableauRegion.width = this->cardWidth();
-        currTableauRegion.height = this->cardHeight();
+        // keep height the same as macro region
         for (int i = 0; i < NUM_TABLEAUS; i++) {
             this->tableauRegions[i] = currTableauRegion;
             currTableauRegion.x += currTableauRegion.width + tableausSpacing;
@@ -213,10 +213,44 @@ namespace solitaire {
         this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(this->wasteRegion));
     }
 
-    void GraphicalGame::clickFoundation(Suit which, Vector2 mousePosition) {
-        auto foundationRegion = this->foundationRegions.at(which);
-        this->game->takeFoundation(which);
+    void GraphicalGame::clickFoundation(Suit foundationSuit, Vector2 mousePosition) {
+        auto foundationRegion = this->foundationRegions.at(foundationSuit);
+        this->game->takeFoundation(foundationSuit);
         this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(foundationRegion));
+    }
+
+    void GraphicalGame::clickTableau(std::size_t tableauIndex, Vector2 mousePosition) {
+        int closedCardsStart = RectOrigin(this->tableauRegions[tableauIndex]).y;
+        auto nClosedCards = this->game->getClosedTableauSize(tableauIndex);
+        auto nOpenCards = this->game->getOpenTableau(tableauIndex).size();
+        if (nOpenCards == 0) {
+            Rectangle lastClosedCard = this->tableauRegions[tableauIndex];
+            lastClosedCard.height = this->cardHeight();
+            lastClosedCard.y += (nClosedCards - 1) * FACE_DOWN_STACKED_DISPLACEMENT;
+            if (CheckCollisionPointRec(mousePosition, lastClosedCard)) {
+                this->game->turnClosedTableauTop(tableauIndex);
+            }
+        } else {
+            int mouseY = mousePosition.y;
+            int openCardsStart = closedCardsStart + nClosedCards * FACE_DOWN_STACKED_DISPLACEMENT;
+            auto nCardsDown = (mouseY - openCardsStart) / STACKED_DISPLACEMENT;
+            if (nCardsDown < nOpenCards) {
+                this->game->takeTableau(tableauIndex, nOpenCards - nCardsDown /* maybe +1 here, not sure */);
+                // TODO test me
+                this->dragOffset = {
+                    mousePosition.x - this->tableauRegions[tableauIndex].x,
+                    static_cast<float>((mouseY - openCardsStart) % STACKED_DISPLACEMENT),
+                };
+            } else {
+                Rectangle lastOpenCard = this->tableauRegions[tableauIndex];
+                lastOpenCard.height = this->cardHeight();
+                lastOpenCard.y = openCardsStart + (nOpenCards - 1) * STACKED_DISPLACEMENT;
+                if (CheckCollisionPointRec(mousePosition, lastOpenCard)) {
+                    this->game->takeTableau(tableauIndex, 1);
+                    this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(lastOpenCard));
+                }
+            }
+        }
     }
 
     void GraphicalGame::handleClick(Vector2 mousePosition) {
@@ -239,6 +273,16 @@ namespace solitaire {
                 }
             }
             return;
+        }
+
+        if (CheckCollisionPointRec(mousePosition, this->tableauMacroRegion)) {
+            for (int i = 0; i < NUM_TABLEAUS; i++) {
+                auto tableauRegion = this->tableauRegions.at(i);
+                if (CheckCollisionPointRec(mousePosition, tableauRegion)) {
+                    this->clickTableau(i, mousePosition);
+                    return;
+                }
+            }
         }
     }
 
