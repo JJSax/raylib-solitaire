@@ -107,6 +107,9 @@ namespace solitaire {
             case PossibleHeldCardsSource::WASTE:
                 this->waste.stack(this->heldCards);
                 break;
+            case PossibleHeldCardsSource::FOUNDATION:
+                Suit s = this->heldSourcePileExtra.foundationSuit;
+                this->foundation.at(s).stack(this->heldCards);
             // TODO
         }
     }
@@ -115,13 +118,26 @@ namespace solitaire {
         return this->heldCards;
     }
 
-    void Game::takeWaste() {
+    void Game::throwIfAttemptingToHoldMoreCards() {
         if (!this->heldCards.empty()) {
             throw InvalidStateException("Cannot hold cards while cards are already being held.");
         }
+    }
+
+    void Game::takeWaste() {
+        this->throwIfAttemptingToHoldMoreCards();
         CardPile *topCard = this->waste.split(1);
         this->heldCards.stack(*topCard);
         this->heldCardsSource = PossibleHeldCardsSource::WASTE;
+        delete topCard;
+    }
+
+    void Game::takeFoundation(Suit s) {
+        this->throwIfAttemptingToHoldMoreCards();
+        CardPile *topCard = this->foundation.at(s).split(1);
+        this->heldCards.stack(*topCard);
+        this->heldCardsSource = PossibleHeldCardsSource::FOUNDATION;
+        this->heldSourcePileExtra.foundationSuit = s;
         delete topCard;
     }
 

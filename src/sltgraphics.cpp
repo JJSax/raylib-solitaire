@@ -114,7 +114,7 @@ namespace solitaire {
         currFoundationRegion.width = this->cardWidth();
         currFoundationRegion.height = this->cardHeight();
         for (Suit i = Suit::FIRST; i < Suit::END; i++) {
-            this->foundationRegions[static_cast<int>(i)] = currFoundationRegion;
+            this->foundationRegions.emplace(i, currFoundationRegion);
             currFoundationRegion.x += currFoundationRegion.width + foundationsSpacing;
         }
     }
@@ -172,7 +172,7 @@ namespace solitaire {
 
     void GraphicalGame::renderFoundations() {
         for (Suit s = Suit::FIRST; s < Suit::END; s++) {
-            Rectangle region = this->foundationRegions[static_cast<int>(s)];
+            Rectangle region = this->foundationRegions.at(s);
             Vector2 position = RectOrigin(region);
             const Card *foundationTop = this->game->peekFoundation(s);
             if (foundationTop == nullptr) {
@@ -213,8 +213,10 @@ namespace solitaire {
         this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(this->wasteRegion));
     }
 
-    void GraphicalGame::cancelDrag() {
-        this->game->returnHeldCards();
+    void GraphicalGame::clickFoundation(Suit which, Vector2 mousePosition) {
+        auto foundationRegion = this->foundationRegions.at(which);
+        this->game->takeFoundation(which);
+        this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(foundationRegion));
     }
 
     void GraphicalGame::handleClick(Vector2 mousePosition) {
@@ -227,11 +229,26 @@ namespace solitaire {
             this->clickWaste(mousePosition);
             return;
         }
+
+        if (CheckCollisionPointRec(mousePosition, this->foundationMacroRegion)) {
+            for (Suit s = Suit::FIRST; s < Suit::END; s++) {
+                auto suitRegion = this->foundationRegions.at(s);
+                if (CheckCollisionPointRec(mousePosition, suitRegion)) {
+                    this->clickFoundation(s, mousePosition);
+                    return;
+                }
+            }
+            return;
+        }
     }
 
     void GraphicalGame::handleDrag(Vector2 mousePosition) {
         this->dragPosition = mousePosition;
         // TODO
+    }
+
+    void GraphicalGame::cancelDrag() {
+        this->game->returnHeldCards();
     }
 
     void GraphicalGame::releaseDrag(Vector2 mousePosition) {

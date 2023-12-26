@@ -59,6 +59,12 @@ namespace solitaire {
         /// @throws solitaire::InvalidStateException If there are already cards being held.
         void takeWaste();
 
+        /// @brief Takes the card on top of the chosen foundation into the held cards.
+        /// @param s solitaire::Suit Which foundation to take from.
+        /// @throws solitaire::NotEnoughCardsException If the chosen foundation is empty.
+        /// @throws solitaire::InvalidStateException If there are already cards being held.
+        void takeFoundation(Suit s);
+
         /// @brief Stacks the 1 element card pile on top of waste.
         /// @throws solitaire::InvalidStateException If there are no held cards.
         void returnHeldCards();
@@ -143,6 +149,8 @@ namespace solitaire {
         void initFoundations() noexcept;
         void dealClosedTableau();
         void dealOpenTableau();
+
+        void throwIfAttemptingToHoldMoreCards();
 
         static void throwIfTableauIndexOutOfRange(std::size_t index);
     };

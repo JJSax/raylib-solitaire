@@ -48,17 +48,9 @@
     },
     "makefile.launchConfigurations": [
         {
-            "cwd": "/home/vvilliam/Projects/solitaire/build",
-            "binaryPath": "/home/vvilliam/Projects/solitaire/build/out",
+            "cwd": "/home/vvilliam/Projects/solitaire",
+            "binaryPath": "/home/vvilliam/Projects/solitaire/out",
             "binaryArgs": []
         }
     ],
-    "makefile.configurations": [
-        {
-            "makeArgs": [
-                "DEBUG=1"
-            ],
-            "name": "Debug build"
-        }
-    ]
 }

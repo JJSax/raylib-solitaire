@@ -127,7 +127,6 @@ GDB_FLAGS :=
 #   \_ include/ - Header files
 #   \_ test/ - Test case files
 #   \_ lib/ - Libraries
-#   \_ build/ - Output directory
 #
 
 
@@ -196,7 +195,7 @@ DEP_DIR := $(SRC_DIR)/.dep
 INC_DIR := ./include
 TST_DIR := ./test
 LIB_DIR := ./lib
-BLD_DIR := ./build
+BLD_DIR := ./
 
 
 #
@@ -284,7 +283,7 @@ VPATH += $(SRC_SUBDIR)
 
 
 
-RUN_CMD := $(BLD_DIR)/$(OUT)
+RUN_CMD := ./$(OUT)
 
 debug_mode = 
 
@@ -335,7 +334,7 @@ RUN_CMD += < $(I_FILE)
 endif
 
 
-all: $(BLD_DIR)/$(OUT)
+all: ./$(OUT)
 
 g: clean all
 
@@ -356,7 +355,7 @@ clean:
 	-@rm -f $(ZIP).zip
 	-@rm -f $(OBJ_DIR)/*.$(COMP_FILE)
 	-@rm -f $(DEP_DIR)/*.d
-	-@rm -f --preserve-root $(BLD_DIR)/*
+	-@rm -f $(OUT)
 
 arun: all run
 
@@ -369,7 +368,7 @@ zip:
 	    $(INC_DIR)/ $(SRC_DIR)/ $(LIB_DIR)/ $(TST_DIR)/ -x \*.$(COMP_FILE) \*.d
 
 
-$(BLD_DIR)/$(OUT): $(OBJECTS)
+$(OUT): $(OBJECTS)
 	@printf "Linking object files... "
 	@$(CC) $^ $(C_FLAGS) $(CFLAGS) -o $(BLD_DIR)/$(OUT) 
 	@printf "\n"
@@ -416,8 +415,6 @@ tree: .gitignore
 	-@touch $(LIB_DIR)/.gitkeep
 	@printf "%s directory created.\n" "Library"
 	-@mkdir -p $(BLD_DIR)
-	-@touch $(BLD_DIR)/.gitkeep
-	@printf "%s directory created.\n" "Build"
 	@printf "Project tree complete.\n"
 	@printf "======================\n\n"
 

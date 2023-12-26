@@ -29,6 +29,7 @@ namespace solitaire {
 
         void clickStock();
         void clickWaste(Vector2 mousePosition);
+        void clickFoundation(Suit which, Vector2 mousePosition);
         // void clickTableau(std::size_t which, std::size_t stackHeight);
 
         void cancelDrag();
@@ -38,7 +39,7 @@ namespace solitaire {
         Rectangle tableauMacroRegion;
         std::array<Rectangle, static_cast<int>(Face::COUNT)> tableauRegions;
         Rectangle foundationMacroRegion;
-        std::array<Rectangle, static_cast<int>(Suit::COUNT)> foundationRegions;
+        std::unordered_map<Suit, Rectangle> foundationRegions;
 
         Game *game;
         Vector2 actualResolution;
