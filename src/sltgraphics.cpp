@@ -88,7 +88,7 @@ namespace solitaire {
         currTableauRegion.width = this->cardWidth();
         // keep height the same as macro region
         for (int i = 0; i < NUM_TABLEAUS; i++) {
-            this->tableauRegions[i] = currTableauRegion;
+            this->tableauRegions.at(i) = currTableauRegion;
             currTableauRegion.x += currTableauRegion.width + tableausSpacing;
         }
 
@@ -141,7 +141,7 @@ namespace solitaire {
     }
 
     void GraphicalGame::renderCardPileFaceDown(std::size_t pileSize, Vector2& position) {
-        for (int i = 0; i < pileSize; i++) {
+        for (std::size_t i = 0; i < pileSize; i++) {
             this->renderCardFaceDown(position);
             position.y += FACE_DOWN_STACKED_DISPLACEMENT;
         }
@@ -165,7 +165,7 @@ namespace solitaire {
 
     void GraphicalGame::renderTableaus() {
         for (int i = 0; i < NUM_TABLEAUS; i++) {
-            Vector2 currTableauPosition = RectOrigin(this->tableauRegions[i]);
+            Vector2 currTableauPosition = RectOrigin(this->tableauRegions.at(i));
             this->renderCardPileFaceDown(this->game->getClosedTableauSize(i), currTableauPosition);
             this->renderCardPileFaceUp(this->game->getOpenTableau(i), currTableauPosition);
         }
@@ -221,11 +221,11 @@ namespace solitaire {
     }
 
     void GraphicalGame::clickTableau(std::size_t tableauIndex, Vector2 mousePosition) {
-        int closedCardsStart = RectOrigin(this->tableauRegions[tableauIndex]).y;
-        auto nClosedCards = this->game->getClosedTableauSize(tableauIndex);
-        auto nOpenCards = this->game->getOpenTableau(tableauIndex).size();
+        int closedCardsStart = RectOrigin(this->tableauRegions.at(tableauIndex)).y;
+        int nClosedCards = this->game->getClosedTableauSize(tableauIndex);
+        int nOpenCards = this->game->getOpenTableau(tableauIndex).size();
         if (nOpenCards == 0) {
-            Rectangle lastClosedCard = this->tableauRegions[tableauIndex];
+            Rectangle lastClosedCard = this->tableauRegions.at(tableauIndex);
             lastClosedCard.height = this->cardHeight();
             lastClosedCard.y += (nClosedCards - 1) * FACE_DOWN_STACKED_DISPLACEMENT;
             if (CheckCollisionPointRec(mousePosition, lastClosedCard)) {
@@ -239,11 +239,11 @@ namespace solitaire {
                 this->game->takeTableau(tableauIndex, nOpenCards - nCardsDown);
 
                 // TODO test me
-                float relativeX = mousePosition.x - this->tableauRegions[tableauIndex].x;
+                float relativeX = mousePosition.x - this->tableauRegions.at(tableauIndex).x;
                 float relativeY = (mouseY - openCardsStart) % STACKED_DISPLACEMENT;
                 this->dragOffset = { relativeX, relativeY };
             } else {
-                Rectangle lastOpenCard = this->tableauRegions[tableauIndex];
+                Rectangle lastOpenCard = this->tableauRegions.at(tableauIndex);
                 lastOpenCard.height = this->cardHeight();
                 lastOpenCard.y = openCardsStart + (nOpenCards - 1) * STACKED_DISPLACEMENT;
                 if (CheckCollisionPointRec(mousePosition, lastOpenCard)) {
