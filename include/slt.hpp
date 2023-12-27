@@ -15,6 +15,10 @@ namespace solitaire {
     public:
         ~Game();
 
+        /// @brief Creates and fully initializes a game.
+        /// @tparam URNG The uniform PRNG type to shuffle the cards with.
+        /// @param rand The uniform PRNG instance to use.
+        /// @return The shuffled and dealt Game.
         template<typename URNG>
         static Game *createAndDealGame(URNG& rand) {
             Game *g = new Game();
@@ -37,7 +41,7 @@ namespace solitaire {
         void turnStock();
 
         /// @brief Turns the waste pile onto the stock.
-        /// @throws solitaire::InvalidStateException if the stock is not empty.
+        /// @throws std::logic_error if the stock is not empty.
         void returnWasteToStock();
 
         /// @brief Checks the card on top of the waste.
@@ -56,24 +60,24 @@ namespace solitaire {
 
         /// @brief Takes the card on top of the waste into the held cards.
         /// @throws solitaire::NotEnoughCardsException If the waste is empty.
-        /// @throws solitaire::InvalidStateException If there are already cards being held.
+        /// @throws std::logic_error If there are already cards being held.
         void takeWaste();
 
         /// @brief Takes the card on top of the chosen foundation into the held cards.
         /// @param s solitaire::Suit Which foundation to take from.
         /// @throws solitaire::NotEnoughCardsException If the chosen foundation is empty.
-        /// @throws solitaire::InvalidStateException If there are already cards being held.
+        /// @throws std::logic_error If there are already cards being held.
         void takeFoundation(Suit s);
 
         /// @brief Takes the amount top cards of the open tableau at index index.
         /// @param index Which tableau to take cards from.
         /// @param amount How many cards to take from the tableau.
         /// @throws solitaire::NotEnoughCardsException If there arent enough cards in the open tableau to take.
-        /// @throws solitaire::InvalidStateException If there are already cards being held.
+        /// @throws std::logic_error If there are already cards being held.
         void takeTableau(std::size_t index, std::size_t amount);
 
         /// @brief Stacks the 1 element card pile on top of waste.
-        /// @throws solitaire::InvalidStateException If there are no held cards.
+        /// @throws std::logic_error If there are no held cards.
         void returnHeldCards();
 
         /// @brief Gets the open tableau at index index.
@@ -89,7 +93,7 @@ namespace solitaire {
         /// @brief Flips the top card of the closed tableau and puts it into the open tableau.
         /// @param index Which tableau to flip a card from.
         /// @throws std::out_of_range if there is no tableau at index index.
-        /// @throws solitaire::InvalidStateException if either the open tableau at index is not empty,
+        /// @throws std::logic_error if either the open tableau at index is not empty,
         /// or if the closed tableau at index is empty.
         void turnClosedTableauTop(std::size_t index);
 
@@ -148,7 +152,5 @@ namespace solitaire {
         void dealOpenTableau();
 
         void throwIfAttemptingToHoldMoreCards();
-
-        static void throwIfTableauIndexOutOfRange(std::size_t index);
     };
 }

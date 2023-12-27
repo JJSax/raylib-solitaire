@@ -99,7 +99,7 @@ LIBS := raylib
 # Compile flags
 #
 
-C_FLAGS = -L$(LIB_DIR) -I$(INC_DIR) $(addprefix -l,$(LIBS)) -std=c++17 -O0
+C_FLAGS = -L$(LIB_DIR) -I$(INC_DIR) $(addprefix -l,$(LIBS)) -std=c++17 -O0 -Wall
 
 
 #

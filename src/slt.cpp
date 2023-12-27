@@ -86,7 +86,7 @@ namespace solitaire {
 
     void Game::turnClosedTableauTop(std::size_t index) {
         if (!this->openTableau.at(index).empty()) {
-            throw InvalidStateException("Cannot flip closed tableau while there are cards above it in the open tableau.");
+            throw std::logic_error("Cannot flip closed tableau while there are cards above it in the open tableau.");
         }
         if (this->closedTableau.at(index).empty()) {
             throw NotEnoughCardsException();
@@ -97,7 +97,7 @@ namespace solitaire {
 
     void Game::returnWasteToStock() {
         if (this->hasStock()) {
-            throw InvalidStateException("Cannot turn waste onto stock if stock is not empty.");
+            throw std::logic_error("Cannot turn waste onto stock if stock is not empty.");
         }
         this->waste.turnOnto(this->stock);
     }
@@ -112,7 +112,7 @@ namespace solitaire {
 
     void Game::returnHeldCards() {
         if (this->heldCards.empty()) {
-            throw InvalidStateException("No cards are currently being held.");
+            throw std::logic_error("No cards are currently being held.");
         }
         switch (this->heldCardsSource) {
             Suit s;
@@ -137,7 +137,7 @@ namespace solitaire {
 
     void Game::throwIfAttemptingToHoldMoreCards() {
         if (!this->heldCards.empty()) {
-            throw InvalidStateException("Cannot hold cards while cards are already being held.");
+            throw std::logic_error("Cannot hold cards while cards are already being held.");
         }
     }
 
@@ -220,15 +220,15 @@ namespace solitaire {
     }
 
     void Game::dealClosedTableau() {
-        for (int i = 0; i < this->closedTableau.size(); i++) {
-            for (int j = 0; j < i; j++) {
+        for (std::size_t i = 0; i < this->closedTableau.size(); i++) {
+            for (std::size_t j = 0; j < i; j++) {
                 this->deal(this->closedTableau.at(i));
             }
         }
     }
 
     void Game::dealOpenTableau() {
-        for (int i = 0; i < this->openTableau.size(); i++) {
+        for (std::size_t i = 0; i < this->openTableau.size(); i++) {
             this->deal(this->openTableau.at(i));
         }
     }

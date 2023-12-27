@@ -289,7 +289,6 @@ namespace solitaire {
 
     void GraphicalGame::handleDrag(Vector2 mousePosition) {
         this->dragPosition = mousePosition;
-        // TODO ?
     }
 
     void GraphicalGame::releaseDrag(Vector2 mousePosition) {
