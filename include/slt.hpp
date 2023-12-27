@@ -4,7 +4,6 @@
 #include <map>
 #include <algorithm>
 #include <random>
-#include <optional>
 
 #include "card.hpp"
 #include "except.hpp"
@@ -13,6 +12,7 @@
 namespace solitaire {
     class Game {
     public:
+        /// @brief Destroys the game and all Cards allocated for it.
         ~Game();
 
         /// @brief Creates and fully initializes a game.

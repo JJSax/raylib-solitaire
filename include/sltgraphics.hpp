@@ -6,7 +6,6 @@
 #include <raylib.h>
 
 #include <memory>
-#include <sstream>
 
 namespace solitaire {
     class GraphicalGame {
@@ -57,11 +56,13 @@ namespace solitaire {
     public:
         GraphicalGame(std::minstd_rand::result_type seed);
 
+        /**
+         * @brief Destroys all Cards and card Textures that have been allocated when creating this game.
+         */
         ~GraphicalGame();
 
         /**
-         * @brief Calculate region
-         *
+         * @brief Calculates regions for different card piles.
          */
         void calculateBounds();
 
