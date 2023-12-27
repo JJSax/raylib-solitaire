@@ -232,15 +232,14 @@ namespace solitaire {
                 this->game->turnClosedTableauTop(tableauIndex);
             }
         } else {
-            int mouseY = mousePosition.y;
             int openCardsStart = closedCardsStart + nClosedCards * FACE_DOWN_STACKED_DISPLACEMENT;
-            int nCardsDown = (mouseY - openCardsStart) / STACKED_DISPLACEMENT;
-            if (nCardsDown < nOpenCards) {
+            int nCardsDown = floor((mousePosition.y - openCardsStart) / STACKED_DISPLACEMENT);
+            if (nCardsDown < 0) {
+                return;
+            } else if (nCardsDown < nOpenCards) {
                 this->game->takeTableau(tableauIndex, nOpenCards - nCardsDown);
-
-                // TODO test me
                 float relativeX = mousePosition.x - this->tableauRegions.at(tableauIndex).x;
-                float relativeY = (mouseY - openCardsStart) % STACKED_DISPLACEMENT;
+                float relativeY = fmod((mousePosition.y - openCardsStart), STACKED_DISPLACEMENT);
                 this->dragOffset = { relativeX, relativeY };
             } else {
                 Rectangle lastOpenCard = this->tableauRegions.at(tableauIndex);
