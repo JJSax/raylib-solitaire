@@ -32,16 +32,16 @@ bool CheckCollisionPointRec(Rectangle rec, Vector2 point) {
 }
 
 float IntersectionArea(Rectangle r1, Rectangle r2) {
-    Vector2 lowerLeft = {
+    Vector2 upperLeft = {
         std::max(r1.x, r2.x),
         std::max(r1.y, r2.y),
     };
-    Vector2 upperRight = {
+    Vector2 lowerRight = {
         std::min(r1.x + r1.width, r2.x + r2.width),
         std::min(r1.y + r1.height, r2.y + r2.height),
     };
-    float xSideLen = upperRight.x - lowerLeft.x;
-    float ySideLen = upperRight.y - lowerLeft.y;
+    float xSideLen = lowerRight.x - upperLeft.x;
+    float ySideLen = lowerRight.y - upperLeft.y;
     if (xSideLen > 0 && ySideLen > 0) {
         return xSideLen * ySideLen;
     } else {
