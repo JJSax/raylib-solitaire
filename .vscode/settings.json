@@ -51,6 +51,12 @@
             "cwd": "/home/vvilliam/Projects/solitaire",
             "binaryPath": "/home/vvilliam/Projects/solitaire/out",
             "binaryArgs": []
+        },
+        {
+            "cwd": "c:\\Users\\wqfer\\Projects\\raylib-solitaire",
+            "binaryPath": "c:\\Users\\wqfer\\Projects\\raylib-solitaire\\out",
+            "binaryArgs": []
         }
     ],
+    "makefile.makePath": "",
 }

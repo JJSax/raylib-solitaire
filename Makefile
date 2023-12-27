@@ -92,14 +92,14 @@ SRC_PTRN := "*."$(SRC_FILE)
 #     LIBS := m GL
 #
 
-LIBS := raylib
+LIBS := raylib opengl32 gdi32 winmm
 
 
 #
 # Compile flags
 #
 
-C_FLAGS = -L$(LIB_DIR) -I$(INC_DIR) $(addprefix -l,$(LIBS)) -std=c++17 -O0 -Wall
+C_FLAGS = -L$(LIB_DIR) -I$(INC_DIR) $(addprefix -l,$(LIBS)) -std=c++17
 
 
 #
@@ -158,7 +158,6 @@ GDB_FLAGS :=
 #
 #    - zip:        Create a .zip file with the following files and directories:
 #                - This file
-#                - BLD_DIR/ (*)
 #                - INC_DIR/
 #                - SRC_DIR/ (*)
 #                - TST_DIR/
@@ -195,7 +194,6 @@ DEP_DIR := $(SRC_DIR)/.dep
 INC_DIR := ./include
 TST_DIR := ./test
 LIB_DIR := ./lib
-BLD_DIR := ./
 
 
 #
@@ -364,13 +362,13 @@ rebrun: rebuild run
 rebuild: clean all
 
 zip:
-	@zip -9q $(ZIP).zip $(BLD_DIR)/.gitkeep $(firstword $(MAKEFILE_LIST)) -r \
+	@zip -9q $(ZIP).zip $(firstword $(MAKEFILE_LIST)) -r \
 	    $(INC_DIR)/ $(SRC_DIR)/ $(LIB_DIR)/ $(TST_DIR)/ -x \*.$(COMP_FILE) \*.d
 
 
 $(OUT): $(OBJECTS)
 	@printf "Linking object files... "
-	@$(CC) $^ $(C_FLAGS) $(CFLAGS) -o $(BLD_DIR)/$(OUT) 
+	@$(CC) $^ $(C_FLAGS) $(CFLAGS) -o $(OUT)
 	@printf "\n"
 	@printf "====================\n"
 	@printf " COMPILING COMPLETE \n"
@@ -414,13 +412,12 @@ tree: .gitignore
 	-@mkdir -p $(LIB_DIR)
 	-@touch $(LIB_DIR)/.gitkeep
 	@printf "%s directory created.\n" "Library"
-	-@mkdir -p $(BLD_DIR)
 	@printf "Project tree complete.\n"
 	@printf "======================\n\n"
 
 destroy-tree-yes-i-am-sure:
 	-@rm --preserve-root -rf $(SRC_DIR) $(INC_DIR) $(DEP_DIR) $(OBJ_DIR)
-	-@rm --preserve-root -rf $(TST_DIR) $(LIB_DIR) $(BLD_DIR)
+	-@rm --preserve-root -rf $(TST_DIR) $(LIB_DIR)
 	-@rm -f $(STDOUT_LOG) .gitignore
 	@printf "Too late to change your mind.\n"
 	@printf "Goodbye project!\n"

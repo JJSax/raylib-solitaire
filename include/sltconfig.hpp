@@ -1,6 +1,6 @@
 #pragma once
 
-#include <raylib.h>
+#include "raylib.h"
 
 namespace solitaire {
     static const int NUM_TABLEAUS = 7;
