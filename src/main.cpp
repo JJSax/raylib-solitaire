@@ -15,11 +15,11 @@ int main() {
 
     std::unique_ptr<GraphicalGame> game = nullptr;
     try {
-        auto rng = std::default_random_engine();
-        rng.seed(123UL);
+        // auto rng = std::default_random_engine();
+        // rng.seed(123UL);
+        // game = GraphicalGame::create(rng);
 
-        game = GraphicalGame::create(rng);
-        game->calculateBounds();
+        game = make_unique<GraphicalGame>(123UL);
 
         while (!WindowShouldClose()) {
             BeginDrawing();

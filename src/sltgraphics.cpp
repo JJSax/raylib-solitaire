@@ -27,6 +27,8 @@ namespace solitaire {
 
         // TODO calculate resolution
         this->actualResolution = TARGET_RESOLUTION;
+
+        this->calculateBounds();
     }
 
     GraphicalGame::~GraphicalGame() {
@@ -38,7 +40,7 @@ namespace solitaire {
         delete this->game;
     }
 
-    GraphicalGame::GraphicalGame(std::minstd_rand::result_type seed) {
+    GraphicalGame::GraphicalGame(std::minstd_rand::result_type seed): GraphicalGame() {
         auto rand = std::minstd_rand(seed);
         this->game = Game::createAndDealGame(rand);
     }
