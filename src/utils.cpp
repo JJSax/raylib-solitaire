@@ -21,16 +21,6 @@ Vector2 Center(Vector2 objectSize, Rectangle region) {
     };
 }
 
-bool CheckCollisionPointRec(Rectangle rec, Vector2 point) {
-    if (point.x < rec.x || point.y < rec.y) {
-        return false;
-    }
-    if (point.x - rec.x > rec.width || point.y - rec.y > rec.height) {
-        return false;
-    }
-    return true;
-}
-
 float IntersectionArea(Rectangle r1, Rectangle r2) {
     Vector2 upperLeft = {
         std::max(r1.x, r2.x),

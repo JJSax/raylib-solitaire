@@ -2,8 +2,8 @@
 
 #include "slt.hpp"
 #include "sltconfig.hpp"
-#include "raylib.h"
 
+#include <raylib.h>
 #include <unordered_map>
 #include <memory>
 

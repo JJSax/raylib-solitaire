@@ -303,7 +303,7 @@ namespace solitaire {
                 try {
                     this->game->stackFoundation(s);
                 } catch (const std::exception& e) {
-                    std::cerr << "Could not stack " << *this->game->getHeldCards().peek();
+                    std::cerr << "Could not stack " << *this->game->getHeldCards().peekBase();
                     std::cerr << " onto foundation " << s << ": ";
                     std::cerr << e.what() << std::endl;
                     this->cancelDrag();
@@ -318,7 +318,7 @@ namespace solitaire {
                 try {
                     this->game->stackTableau(i);
                 } catch (const std::exception& e) {
-                    std::cerr << "Could not stack " << *this->game->getHeldCards().peek();
+                    std::cerr << "Could not stack " << *this->game->getHeldCards().peekBase();
                     std::cerr << " onto tableau " << i << ": ";
                     std::cerr << e.what() << std::endl;
                     this->cancelDrag();
@@ -326,8 +326,6 @@ namespace solitaire {
                 return;
             }
         }
-        // TODO try stacking foundation
-        // dont forget the early return
 
         this->cancelDrag();
     }
