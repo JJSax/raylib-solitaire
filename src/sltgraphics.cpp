@@ -213,14 +213,19 @@ namespace solitaire {
     }
 
     void GraphicalGame::clickWaste(Vector2 mousePosition) {
+        if (!this->game->hasWaste()) {
+            return;
+        }
         this->game->takeWaste();
         this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(this->wasteRegion));
     }
 
     void GraphicalGame::clickFoundation(Suit foundationSuit, Vector2 mousePosition) {
         auto foundationRegion = this->foundationRegions.at(foundationSuit);
+        if (this->game->hasFoundation(foundationSuit)) {
         this->game->takeFoundation(foundationSuit);
         this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(foundationRegion));
+    }
     }
 
     void GraphicalGame::clickTableau(std::size_t tableauIndex, Vector2 mousePosition) {
@@ -228,6 +233,9 @@ namespace solitaire {
         int nClosedCards = this->game->getClosedTableauSize(tableauIndex);
         int nOpenCards = this->game->getOpenTableau(tableauIndex).size();
         if (nOpenCards == 0) {
+            if (this->game->getClosedTableauSize(tableauIndex) == 0) {
+                return;
+            }
             Rectangle lastClosedCard = this->tableauRegions.at(tableauIndex);
             lastClosedCard.height = this->cardHeight();
             lastClosedCard.y += (nClosedCards - 1) * FACE_DOWN_STACKED_DISPLACEMENT;

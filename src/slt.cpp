@@ -141,6 +141,12 @@ namespace solitaire {
         }
     }
 
+    void Game::throwIfAttemptingToGrabEmptyPile(CardPile pile) {
+        if (this->heldCards.empty() && pile.empty()) {
+            throw std::logic_error("Cannot grab an empty pile.");
+        }
+    }
+
     void Game::takeWaste() {
         this->throwIfAttemptingToHoldMoreCards();
         CardPile *topCard = this->waste.split(1);
@@ -149,8 +155,14 @@ namespace solitaire {
         delete topCard;
     }
 
+    bool Game::hasWaste() {
+        return !this->waste.empty();
+    }
+
     void Game::takeFoundation(Suit s) {
         this->throwIfAttemptingToHoldMoreCards();
+        this->throwIfAttemptingToGrabEmptyPile(this->foundation.at(s));
+
         CardPile *topCard = this->foundation.at(s).split(1);
         this->heldCards.stack(*topCard);
         this->heldCardsSource = PossibleHeldCardsSource::FOUNDATION;
@@ -197,6 +209,9 @@ namespace solitaire {
         this->foundation.at(suit).stack(this->heldCards);
     }
 
+    bool Game::hasFoundation(Suit suit) {
+        return !this->foundation.at(suit).empty();
+    }
 
     void Game::deal(CardPile& onto) {
         auto newCard = this->stock.takeTop();

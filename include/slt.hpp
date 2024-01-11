@@ -64,6 +64,8 @@ namespace solitaire {
         /// @throws std::logic_error If there are already cards being held.
         void takeWaste();
 
+        bool hasWaste();
+
         /// @brief Takes the card on top of the chosen foundation into the held cards.
         /// @param s solitaire::Suit Which foundation to take from.
         /// @throws solitaire::NotEnoughCardsException If the chosen foundation is empty.
@@ -117,6 +119,7 @@ namespace solitaire {
         /// @throws solitaire::TooManyCards If the held cards pile contains more than 1 card.
         void stackFoundation(Suit suit);
 
+        bool hasFoundation(Suit suit);
     private:
         Game();
 
@@ -127,10 +130,10 @@ namespace solitaire {
 
         std::array<CardPile, NUM_TABLEAUS> openTableau;
         std::array<CardPile, NUM_TABLEAUS> closedTableau;
-        std::unordered_map<Suit, CardPile> foundation;
-        CardPile stock;
-        CardPile waste;
-        CardPile heldCards;
+        std::unordered_map<Suit, CardPile> foundation; // The piles that the cards at the end of a successful game.
+        CardPile stock; // The hidden cards to pull from.
+        CardPile waste; // The pile of cards from the stock that hasn't been used.
+        CardPile heldCards; // The cards being held with the cursor.
 
         enum class PossibleHeldCardsSource {
             WASTE,
@@ -153,5 +156,6 @@ namespace solitaire {
         void dealOpenTableau();
 
         void throwIfAttemptingToHoldMoreCards();
+        void throwIfAttemptingToGrabEmptyPile(CardPile pile);
     };
 }
