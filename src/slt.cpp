@@ -13,7 +13,10 @@ namespace solitaire {
         // to 3 and are both black, midpoints add to 3 and are both red.
         // any other pair will not add up to three, therefore we have
         // this function
-        return static_cast<int>(s1) + static_cast<int>(s2) != 3;
+        // same suits add to 3, so test for that included.
+        int f = static_cast<int>(s1);
+        int s = static_cast<int>(s2);
+        return f + s != 3 && f != s;
     }
 
     void throwIfCantStackInTableau(const CardPile& pile, const Card& newCard) {
