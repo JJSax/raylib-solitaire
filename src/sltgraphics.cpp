@@ -169,6 +169,7 @@ namespace solitaire {
     void GraphicalGame::renderTableaus() {
         for (int i = 0; i < NUM_TABLEAUS; i++) {
             Vector2 currTableauPosition = RectOrigin(this->tableauRegions.at(i));
+            this->renderCardTexture(this->cardBackTexture, currTableauPosition, Fade(BLACK, 0.3));
             this->renderCardPileFaceDown(this->game->getClosedTableauSize(i), currTableauPosition);
             this->renderCardPileFaceUp(this->game->getOpenTableau(i), currTableauPosition);
         }
