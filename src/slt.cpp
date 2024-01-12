@@ -67,6 +67,7 @@ namespace solitaire {
     }
 
     void Game::dealGame() {
+        this->moves = 0;
         this->initFoundations();
         this->dealClosedTableau();
         this->dealOpenTableau();
@@ -193,6 +194,10 @@ namespace solitaire {
         }
 
         throwIfCantStackInTableau(this->openTableau.at(index), *this->heldCards.peekBase());
+        std::size_t heldIndex = this->heldSourcePileExtra.tableauIndex;
+        if (index != heldIndex) {
+            this->moves++;
+        }
         this->openTableau.at(index).stack(this->heldCards);
     }
 
@@ -207,6 +212,7 @@ namespace solitaire {
         throwIfCantStackInFoundation(suit, this->foundation.at(suit), *single);
 
         this->foundation.at(suit).stack(this->heldCards);
+        this->moves++;
     }
 
     bool Game::hasFoundation(Suit suit) {
@@ -217,6 +223,8 @@ namespace solitaire {
         auto newCard = this->stock.takeTop();
         onto.add(newCard);
     }
+
+    int Game::getMoveCount() { return moves; }
 
     void Game::initFullDeckInOrder() noexcept {
         for (Suit s = Suit::FIRST; s < Suit::END; s++) {

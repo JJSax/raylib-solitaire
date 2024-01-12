@@ -174,6 +174,10 @@ namespace solitaire {
         }
     }
 
+    void GraphicalGame::renderUI() {
+        DrawText(TextFormat("Moves: %i", this->game->getMoveCount()), 20, 20, 30, BLACK);
+    }
+
     void GraphicalGame::renderFoundations() {
         for (Suit s = Suit::FIRST; s < Suit::END; s++) {
             Rectangle region = this->foundationRegions.at(s);
@@ -202,6 +206,7 @@ namespace solitaire {
         this->renderTableaus();
         this->renderFoundations();
         this->renderHeldCards();
+        this->renderUI();
     }
 
     void GraphicalGame::clickStock() {
@@ -223,9 +228,9 @@ namespace solitaire {
     void GraphicalGame::clickFoundation(Suit foundationSuit, Vector2 mousePosition) {
         auto foundationRegion = this->foundationRegions.at(foundationSuit);
         if (this->game->hasFoundation(foundationSuit)) {
-        this->game->takeFoundation(foundationSuit);
-        this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(foundationRegion));
-    }
+            this->game->takeFoundation(foundationSuit);
+            this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(foundationRegion));
+        }
     }
 
     void GraphicalGame::clickTableau(std::size_t tableauIndex, Vector2 mousePosition) {

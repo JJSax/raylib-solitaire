@@ -120,9 +120,13 @@ namespace solitaire {
         void stackFoundation(Suit suit);
 
         bool hasFoundation(Suit suit);
+
+        int getMoveCount();
+
     private:
         Game();
 
+        int moves; // Moves taken in game.
         template<typename URNG>
         void shuffleStock(URNG& rand) {
             std::shuffle(this->stock.begin(), this->stock.end(), rand);

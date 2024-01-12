@@ -17,6 +17,7 @@ namespace solitaire {
         void renderCardPileFaceUp(const CardPile& pile, Vector2 position);
         void renderCardPileFaceDown(std::size_t pileSize, Vector2& position);
 
+        void renderUI();
         void renderStock();
         void renderWaste();
         void renderTableaus();
