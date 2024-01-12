@@ -86,6 +86,7 @@ namespace solitaire {
         }
         auto card = this->stock.takeTop();
         this->waste.add(card);
+        this->moves++;
     }
 
     void Game::turnClosedTableauTop(std::size_t index) {
