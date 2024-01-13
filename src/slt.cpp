@@ -1,5 +1,6 @@
 #include "slt.hpp"
 #include "except.hpp"
+#include "options.hpp"
 
 #include <sstream>
 
@@ -198,11 +199,20 @@ namespace solitaire {
         }
 
         throwIfCantStackInTableau(this->openTableau.at(index), *this->heldCards.peekBase());
-        std::size_t heldIndex = this->heldSourcePileExtra.tableauIndex;
-        if (index != heldIndex) {
+        if (index != this->heldSourcePileExtra.tableauIndex) {
             this->moves++;
         }
+
+        int heldIndex = this->heldSourcePileExtra.tableauIndex;
         this->openTableau.at(index).stack(this->heldCards);
+        if (
+            config::autoplayClosedTableauTop
+            && this->getClosedTableauSize(heldIndex) > 0
+            && this->getOpenTableau(heldIndex).size() == 0
+            && this->heldCardsSource == PossibleHeldCardsSource::TABLEAU
+        ) {
+            this->turnClosedTableauTop(heldIndex);
+        }
     }
 
     void Game::stackFoundation(Suit suit) {
@@ -215,8 +225,20 @@ namespace solitaire {
 
         throwIfCantStackInFoundation(suit, this->foundation.at(suit), *single);
 
+        int heldIndex = this->heldSourcePileExtra.tableauIndex;
         this->foundation.at(suit).stack(this->heldCards);
-        this->moves++;
+        if (
+            config::autoplayClosedTableauTop
+            && this->heldCardsSource == PossibleHeldCardsSource::TABLEAU
+            && this->getClosedTableauSize(heldIndex) > 0
+            && this->getOpenTableau(heldIndex).size() == 0
+        ) {
+            this->turnClosedTableauTop(heldIndex);
+        }
+
+        if (this->heldCardsSource != PossibleHeldCardsSource::FOUNDATION) {
+            this->moves++;
+        }
     }
 
     bool Game::hasFoundation(Suit suit) {

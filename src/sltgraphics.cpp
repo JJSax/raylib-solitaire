@@ -201,6 +201,10 @@ namespace solitaire {
         this->renderCardPileFaceUp(this->game->getHeldCards(), drawPos);
     }
 
+    void GraphicalGame::update() {
+        frame++;
+    }
+
     void GraphicalGame::render() {
         this->renderStock();
         this->renderWaste();
@@ -238,7 +242,7 @@ namespace solitaire {
         int closedCardsStart = RectOrigin(this->tableauRegions.at(tableauIndex)).y;
         int nClosedCards = this->game->getClosedTableauSize(tableauIndex);
         int nOpenCards = this->game->getOpenTableau(tableauIndex).size();
-        if (nOpenCards == 0) {
+        if (nOpenCards == 0) { // if card stack needs top card turned over.
             if (this->game->getClosedTableauSize(tableauIndex) == 0) {
                 return;
             }
@@ -249,16 +253,17 @@ namespace solitaire {
                 this->game->turnClosedTableauTop(tableauIndex);
             }
         } else {
+            this->clickStart = this->frame;
             int openCardsStart = closedCardsStart + nClosedCards * FACE_DOWN_STACKED_DISPLACEMENT;
             int nCardsDown = floor((mousePosition.y - openCardsStart) / STACKED_DISPLACEMENT);
-            if (nCardsDown < 0) {
+            if (nCardsDown < 0) { // if clicking hidden cards under shown tableau.
                 return;
-            } else if (nCardsDown < nOpenCards) {
+            } else if (nCardsDown < nOpenCards) { // if dragging a stack.
                 this->game->takeTableau(tableauIndex, nOpenCards - nCardsDown);
                 float relativeX = mousePosition.x - this->tableauRegions.at(tableauIndex).x;
                 float relativeY = fmod((mousePosition.y - openCardsStart), STACKED_DISPLACEMENT);
                 this->dragOffset = { relativeX, relativeY };
-            } else {
+            } else { // single card
                 Rectangle lastOpenCard = this->tableauRegions.at(tableauIndex);
                 lastOpenCard.height = this->cardHeight();
                 lastOpenCard.y = openCardsStart + (nOpenCards - 1) * STACKED_DISPLACEMENT;

@@ -54,6 +54,9 @@ namespace solitaire {
         std::map<std::pair<Suit, Face>, Texture> cardTextures;
         Texture cardBackTexture;
 
+        int frame = 0;
+        int clickStart;
+
     public:
         GraphicalGame(std::minstd_rand::result_type seed);
 
@@ -80,6 +83,9 @@ namespace solitaire {
             ggame->game = Game::createAndDealGame(rand);
             return std::unique_ptr<GraphicalGame>(ggame);
         }
+
+        /// @brief Updates the game.
+        void update();
 
         /// @brief Renders the game.
         void render();

@@ -25,6 +25,9 @@ int main() {
         GraphicalGame game(secondsSinceEpoch());
 
         while (!WindowShouldClose()) {
+
+            game.update();
+
             BeginDrawing();
                 ClearBackground(BACKGROUND_COLOR);
                 game.render();
