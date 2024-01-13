@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "utils.hpp"
+#include "options.hpp"
 
 namespace solitaire {
     GraphicalGame::GraphicalGame() {
@@ -227,6 +228,7 @@ namespace solitaire {
             return;
         }
         this->game->takeWaste();
+        this->clickStart = this->frame;
         this->dragOffset = Vector2Subtract(mousePosition, RectOrigin(this->wasteRegion));
     }
 
@@ -316,6 +318,28 @@ namespace solitaire {
         if (this->game->getHeldCards().empty()) {
             return;
         }
+
+        if (this->frame - this->clickStart <= config::framesToIgnoreClick) {
+            // If card was clicked and released quickly
+            int holdSize = this->game->getHeldCards().size();
+            if (holdSize > 1 && config::autoplayFromTableau) {
+                // if stack only check tableau
+                return;
+            }
+
+            if (holdSize == 1) {
+                if (config::autoplayToFoundation) {
+                    this->game->attemptHeldToFoundation();
+                }
+            }
+
+            if (!this->game->getHeldCards().empty()) {
+                this->cancelDrag();
+            }
+
+            return;
+        }
+
         for (Suit s = Suit::FIRST; s < Suit::END; s++) {
             float score = this->cardDragOverlapScore(this->foundationRegions.at(s));
             if (score >= CARD_SLOT_MIN_OVERLAP_AREA) {

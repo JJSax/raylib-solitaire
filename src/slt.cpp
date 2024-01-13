@@ -252,6 +252,30 @@ namespace solitaire {
 
     int Game::getMoveCount() { return moves; }
 
+    void Game::attemptHeldToFoundation() {
+        if (this->heldCards.size() != 1) return;
+
+        Card heldCard = *this->heldCards.peek();
+        Face heldFace = this->heldCards.peekBase()->face;
+        for (Suit s = Suit::FIRST; s < Suit::END; s++) {
+            if (heldCard.suit == s && heldCard.face == Face::ACE) {
+                this->stackFoundation(s);
+                return;
+            }
+            if (!this->hasFoundation(s)) continue; // prevent checking a foundation that doesn't exist.
+
+            Face topFace = this->foundation.at(s).peek()->face;
+            if (
+                this->heldCards.peekBase()->suit == s
+                && (++topFace) == heldFace
+            ) {
+                this->stackFoundation(s);
+                return;
+            }
+        }
+
+    }
+
     void Game::initFullDeckInOrder() noexcept {
         for (Suit s = Suit::FIRST; s < Suit::END; s++) {
             for (Face f = Face::FIRST; f < Face::END; f++) {

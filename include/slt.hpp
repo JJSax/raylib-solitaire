@@ -119,9 +119,18 @@ namespace solitaire {
         /// @throws solitaire::TooManyCards If the held cards pile contains more than 1 card.
         void stackFoundation(Suit suit);
 
+        /// @brief Checks if the foundation stack is empty.
+        /// @param suit The suit whose foundation will be checked.
+        /// @return If it has a card.
         bool hasFoundation(Suit suit);
 
+        /// @brief Get the total moves in the game.
+        /// @return The number of moves.
         int getMoveCount();
+
+        /// @brief Attempts to put the held singular card onto the foundation pile.
+        void attemptHeldToFoundation();
+
 
     private:
         Game();

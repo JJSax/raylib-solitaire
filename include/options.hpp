@@ -9,15 +9,15 @@ namespace config {
     };
 
     /// @brief Automatically place card from waste when clicked.
-    bool autoplayFromWaste = false;
+    inline bool autoplayFromWaste = false;
     /// @brief Automatically find a place for clicked tableau.
-    bool autoplayFromTableau = false;
+    inline bool autoplayFromTableau = false;
     /// @brief Automatically put clicked card onto foundation.
-    bool autoplayToFoundation = true;
+    inline bool autoplayToFoundation = true;
     /// @brief Automatically flip top card of hidden tableau stack when it's exposed.
-    bool autoplayClosedTableauTop = true;
+    inline bool autoplayClosedTableauTop = true;
 
     //ms click vs drag
-    int framesToIgnoreClick = 10;
+    inline int framesToIgnoreClick = 10;
 
 }
