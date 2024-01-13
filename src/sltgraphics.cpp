@@ -277,7 +277,7 @@ namespace solitaire {
         }
     }
 
-    void GraphicalGame::handleClick(Vector2 mousePosition) {
+    void GraphicalGame::handleMousePress(Vector2 mousePosition) {
         if (CheckCollisionPointRec(mousePosition, this->stockRegion)) {
             this->clickStock();
             return;
@@ -310,36 +310,46 @@ namespace solitaire {
         }
     }
 
-    void GraphicalGame::handleDrag(Vector2 mousePosition) {
-        this->dragPosition = mousePosition;
-    }
-
-    void GraphicalGame::releaseDrag(Vector2 mousePosition) {
+    void GraphicalGame::handleMouseRelease(Vector2 mousePosition) {
         if (this->game->getHeldCards().empty()) {
             return;
         }
 
         if (this->frame - this->clickStart <= config::framesToIgnoreClick) {
-            // If card was clicked and released quickly
-            int holdSize = this->game->getHeldCards().size();
-            if (holdSize > 1 && config::autoplayFromTableau) {
-                // if stack only check tableau
-                return;
-            }
-
-            if (holdSize == 1) {
-                if (config::autoplayToFoundation) {
-                    this->game->attemptHeldToFoundation();
-                }
-            }
-
-            if (!this->game->getHeldCards().empty()) {
-                this->cancelDrag();
-            }
-
+            // if the 'drag' was only a fast click.
+            this->handleClick(mousePosition);
             return;
         }
 
+        this->releaseDrag(mousePosition);
+    }
+
+    void GraphicalGame::handleDrag(Vector2 mousePosition) {
+        this->dragPosition = mousePosition;
+    }
+
+    void GraphicalGame::handleClick(Vector2 mousePosition) {
+        // If card was clicked and released quickly
+        int holdSize = this->game->getHeldCards().size();
+        if (holdSize > 1 && config::autoplayFromTableau) {
+            // if stack only check tableau
+            return;
+        }
+
+        if (holdSize == 1) {
+            if (config::autoplayToFoundation) {
+                this->game->attemptHeldToFoundation();
+            }
+        }
+
+        if (!this->game->getHeldCards().empty()) {
+            this->cancelDrag();
+        }
+
+        return;
+    }
+
+    void GraphicalGame::releaseDrag(Vector2 mousePosition) {
         for (Suit s = Suit::FIRST; s < Suit::END; s++) {
             float score = this->cardDragOverlapScore(this->foundationRegions.at(s));
             if (score >= CARD_SLOT_MIN_OVERLAP_AREA) {

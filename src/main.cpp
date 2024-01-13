@@ -35,13 +35,13 @@ int main() {
 
             auto mousePos = GetMousePosition();
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                game.handleClick(mousePos);
+                game.handleMousePress(mousePos);
             }
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                 game.handleDrag(mousePos);
             }
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                game.releaseDrag(mousePos);
+                game.handleMouseRelease(mousePos);
             }
         }
     } catch (const std::exception& e) {

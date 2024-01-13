@@ -94,13 +94,19 @@ namespace solitaire {
          * @brief Signals a new click and possibly the start of a drag.
          * @param mousePosition Position of the click on the window.
          */
-        void handleClick(Vector2 mousePosition);
+        void handleMousePress(Vector2 mousePosition);
+
+        void handleMouseRelease(Vector2 mousePosition);
 
         /**
          * @brief Updates mouse position while dragging
          * @param mousePosition New mouse position while dragging.
          */
         void handleDrag(Vector2 mousePosition);
+
+        /// @brief Handles quick click, then release actions.
+        /// @param mousePosition Position of the mouse when released.
+        void handleClick(Vector2 mousePosition);
 
         /**
          * @brief Releases currently held cards at the given mouse position.
