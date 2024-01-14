@@ -9,7 +9,7 @@ namespace config {
     };
 
     /// @brief Automatically place card from waste when clicked.
-    inline bool autoplayFromWaste = false;
+    inline bool autoplayFromWaste = true;
     /// @brief Automatically find a place for clicked tableau.
     inline bool autoplayFromTableau = false;
     /// @brief Automatically put clicked card onto foundation.

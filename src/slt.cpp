@@ -5,10 +5,6 @@
 #include <sstream>
 
 namespace solitaire {
-    bool suitsCanAlternate(Suit s1, Suit s2) noexcept;
-    void throwIfCantStackInTableau(const CardPile& cardPile, const Card& newCard);
-    void throwIfCantStackInFoundation(Suit foundationSuit, const CardPile& pile, const Card& newCard);
-
     bool suitsCanAlternate(Suit s1, Suit s2) noexcept {
         // works due to the ordering of the suits: endpoints add
         // to 3 and are both black, midpoints add to 3 and are both red.
@@ -18,6 +14,19 @@ namespace solitaire {
         int f = static_cast<int>(s1);
         int s = static_cast<int>(s2);
         return f + s != 3 && f != s;
+    }
+
+    bool Game::canStack(const CardPile& bottom, const CardPile& top) {
+        if (bottom.empty()) {
+            return top.peekBase()->face == Face::KING;
+        }
+
+        const Card *bottomContact = bottom.peek();
+        const Card *topContact = top.peekBase();
+        Face tcFace = topContact->face;
+        ++tcFace;
+
+        return suitsCanAlternate(bottomContact->suit, topContact->suit) && tcFace == bottomContact->face;
     }
 
     void throwIfCantStackInTableau(const CardPile& pile, const Card& newCard) {
@@ -205,8 +214,7 @@ namespace solitaire {
 
         int heldIndex = this->heldSourcePileExtra.tableauIndex;
         this->openTableau.at(index).stack(this->heldCards);
-        if (
-            config::autoplayClosedTableauTop
+        if (config::autoplayClosedTableauTop
             && this->getClosedTableauSize(heldIndex) > 0
             && this->getOpenTableau(heldIndex).size() == 0
             && this->heldCardsSource == PossibleHeldCardsSource::TABLEAU
@@ -274,6 +282,15 @@ namespace solitaire {
             }
         }
 
+    }
+
+    void Game::attemptHeldToTableau() {
+        for (std::size_t i = 0; i < NUM_TABLEAUS; i++) {
+            if (this->canStack(this->getOpenTableau(i), this->heldCards)) {
+                this->stackTableau(i);
+                return;
+            };
+        }
     }
 
     void Game::initFullDeckInOrder() noexcept {

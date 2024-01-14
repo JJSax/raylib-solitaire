@@ -340,6 +340,13 @@ namespace solitaire {
             if (config::autoplayToFoundation) {
                 this->game->attemptHeldToFoundation();
             }
+
+            if (config::autoplayFromWaste
+                && CheckCollisionPointRec(mousePosition, this->wasteRegion)
+                && !this->game->getHeldCards().empty()
+            ) {
+                this->game->attemptHeldToTableau();
+            }
         }
 
         if (!this->game->getHeldCards().empty()) {

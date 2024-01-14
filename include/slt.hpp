@@ -131,6 +131,8 @@ namespace solitaire {
         /// @brief Attempts to put the held singular card onto the foundation pile.
         void attemptHeldToFoundation();
 
+        /// @brief Attempts to put the held CardPile onto any valid tableau.
+        void attemptHeldToTableau();
 
     private:
         Game();
@@ -170,5 +172,11 @@ namespace solitaire {
 
         void throwIfAttemptingToHoldMoreCards();
         void throwIfAttemptingToGrabEmptyPile(CardPile pile);
+
+        /// @brief Allows you to check if a CardPile can stack on another.
+        /// @param bottom
+        /// @param top
+        /// @return If top is allowed on bottom.
+        bool canStack(const CardPile& bottom, const CardPile& top);
     };
 }
