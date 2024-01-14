@@ -333,6 +333,7 @@ namespace solitaire {
         int holdSize = this->game->getHeldCards().size();
         if (holdSize > 1 && config::autoplayFromTableau) {
             // if stack only check tableau
+            this->game->attemptHeldToTableau();
             return;
         }
 
@@ -344,6 +345,13 @@ namespace solitaire {
             if (config::autoplayFromWaste
                 && CheckCollisionPointRec(mousePosition, this->wasteRegion)
                 && !this->game->getHeldCards().empty()
+            ) {
+                this->game->attemptHeldToTableau();
+            }
+
+            if (config::autoplayFromTableau
+                && !this->game->getHeldCards().empty()
+                && CheckCollisionPointRec(mousePosition, this->tableauMacroRegion)
             ) {
                 this->game->attemptHeldToTableau();
             }
