@@ -17,7 +17,7 @@ namespace config {
     /// @brief Automatically flip top card of hidden tableau stack when it's exposed.
     inline bool autoplayClosedTableauTop = true;
 
-    //ms click vs drag
+    /// @brief How many frames defines a click vs. a drag.
     inline int framesToIgnoreClick = 10;
 
 }
