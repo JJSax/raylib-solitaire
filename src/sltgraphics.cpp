@@ -334,6 +334,9 @@ namespace solitaire {
         if (holdSize > 1 && config::autoplayFromTableau) {
             // if stack only check tableau
             this->game->attemptHeldToTableau();
+            if (!this->game->getHeldCards().empty()) {
+                this->cancelDrag();
+            }
             return;
         }
 
