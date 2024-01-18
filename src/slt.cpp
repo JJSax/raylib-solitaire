@@ -3,6 +3,7 @@
 #include "options.hpp"
 
 #include <sstream>
+    #include <iostream>
 
 namespace solitaire {
     bool suitsCanAlternate(Suit s1, Suit s2) noexcept {
@@ -287,27 +288,25 @@ namespace solitaire {
     void Game::attemptHeldToTableau() {
         Face heldContact = this->heldCards.peekBase()->face;
 
-        if (heldContact == Face::KING) {
-            for (std::size_t i = 0; i < NUM_TABLEAUS; i++) {
-                if (this->heldCardsSource == PossibleHeldCardsSource::TABLEAU
-                    && this->heldSourcePileExtra.tableauIndex == i) continue;
-                if (this->getOpenTableau(i).empty()) {
-                    this->stackTableau(i);
-                    // std::cout << "End held to tableau" << std::endl;
-                    return;
-                }
-            }
-
-            if (config::autoplayClosedTableauTop) return; // will never have a closed top to look at.
-        }
+        std::vector<std::size_t> valid;
 
         for (std::size_t i = 0; i < NUM_TABLEAUS; i++) {
             if (this->heldCardsSource == PossibleHeldCardsSource::TABLEAU
-                && this->heldSourcePileExtra.tableauIndex == i) continue;
-            if (!this->getOpenTableau(i).empty() && this->canStack(this->getOpenTableau(i), this->heldCards)) {
-                this->stackTableau(i); //! it errors here on occasion
+                && this->heldSourcePileExtra.tableauIndex == i
+            ) continue;
+
+            if (heldContact == Face::KING && this->getOpenTableau(i).empty()) {
+                this->stackTableau(i);
                 return;
-            };
+            }
+
+            if (!this->getOpenTableau(i).empty() && this->canStack(this->getOpenTableau(i), this->heldCards)) {
+                valid.emplace_back(i);
+            }
+        }
+
+        if (!valid.empty()) {
+            this->stackTableau(valid[0]);
         }
     }
 
