@@ -285,9 +285,23 @@ namespace solitaire {
     }
 
     void Game::attemptHeldToTableau() {
+        Face heldContact = this->heldCards.peekBase()->face;
+
+        if (heldContact == Face::KING) {
+            for (std::size_t i = 0; i < NUM_TABLEAUS; i++) {
+                if (this->getOpenTableau(i).empty()) {
+                    this->stackTableau(i);
+                    // std::cout << "End held to tableau" << std::endl;
+                    return;
+                }
+            }
+
+            if (config::autoplayClosedTableauTop) return; // will never have a closed top to look at.
+        }
+
         for (std::size_t i = 0; i < NUM_TABLEAUS; i++) {
-            if (this->canStack(this->getOpenTableau(i), this->heldCards)) {
-                this->stackTableau(i);
+            if (!this->getOpenTableau(i).empty() && this->canStack(this->getOpenTableau(i), this->heldCards)) {
+                this->stackTableau(i); //! it errors here on occasion
                 return;
             };
         }
