@@ -289,6 +289,8 @@ namespace solitaire {
 
         if (heldContact == Face::KING) {
             for (std::size_t i = 0; i < NUM_TABLEAUS; i++) {
+                if (this->heldCardsSource == PossibleHeldCardsSource::TABLEAU
+                    && this->heldSourcePileExtra.tableauIndex == i) continue;
                 if (this->getOpenTableau(i).empty()) {
                     this->stackTableau(i);
                     // std::cout << "End held to tableau" << std::endl;
@@ -300,6 +302,8 @@ namespace solitaire {
         }
 
         for (std::size_t i = 0; i < NUM_TABLEAUS; i++) {
+            if (this->heldCardsSource == PossibleHeldCardsSource::TABLEAU
+                && this->heldSourcePileExtra.tableauIndex == i) continue;
             if (!this->getOpenTableau(i).empty() && this->canStack(this->getOpenTableau(i), this->heldCards)) {
                 this->stackTableau(i); //! it errors here on occasion
                 return;
